@@ -1,8 +1,8 @@
 // console.log("Expecto Patronum");
 namespace randomPoem {
     let s: String[] = ["Mickey", "Minnie", "Goofy", "Donald", "Daisy", "Pluto"];
-    let p: String[] = ["verwechselt", "rettet", "besucht", "lacht ueber", "klaut", "wäscht"];
-    let o: String[] = ["Tick, Trick und Track", "Dagoberts ersten Dollar", "die Panzerknacker", "Entenhausen", "Daniel Duesentriebs Erfindungen", "den Geldspeicher"];
+    let p: String[] = ["verwechselt", "rettet", "besucht", "lacht über", "klaut", "wäscht"];
+    let o: String[] = ["Tick, Trick und Track", "Dagoberts ersten Dollar", "die Panzerknacker", "Entenhausen", "Daniel Düsentriebs Erfindungen", "den Geldspeicher"];
     // console.log(s);
     // console.log(p);
     // console.log(o);
@@ -20,7 +20,7 @@ namespace randomPoem {
         let randomP: number = Math.floor(Math.random() * p.length);
         let randomO: number = Math.floor(Math.random() * o.length);
         // console.log(randomS);
-        verse = s.splice(randomS)[0] + " " + p.splice(randomP)[0] + " " + o.splice(randomO)[0];
+        verse = s.splice(randomS, 1) + " " + p.splice(randomP, 1) + " " + o.splice(randomO, 1);
         return verse;
     }
 
