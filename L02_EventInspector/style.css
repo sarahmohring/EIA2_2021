@@ -1,0 +1,34 @@
+html {
+    display: flex;
+    justify-content: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-align: center;
+    color: whitesmoke;
+}
+
+h1 {
+    text-align: center;
+    width: auto;
+    color: turquoise;
+}
+
+div {
+    border: thin solid turquoise;
+    background-color: rgb(181, 253, 246);
+    display: inline-block;
+    width: 700px;
+    height: 600px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+span {
+    font-size: 1em;
+    color: white; 
+    background-color: rgb(240, 195, 195);
+    border: thin solid rgb(247, 164, 164);
+    position: fixed;
+    width: 250px;
+    height: 40px;
+    display: inline-block;
+}
