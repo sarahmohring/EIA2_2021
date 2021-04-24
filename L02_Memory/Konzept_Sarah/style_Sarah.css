@@ -1,0 +1,81 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+div.startbutton {
+    padding: 10px;
+    width: 80px;
+    text-align: center;
+    font-size: 32px;
+    background-color: lightblue;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline;
+}
+div.startbutton:hover {
+    background-color: lightskyblue;
+}
+
+div.stopbutton {
+    padding: 10px;
+    width: 80px;
+    text-align: center;
+    font-size: 32px;
+    background-color: lightblue;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline;
+}
+div.stopbutton:hover {
+    background-color: lightskyblue;
+}
+
+div.playingfield {
+    border: solid;
+    width: 95%;
+    height: 500px;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+span.visible {
+    font-size: 100px;
+    border: solid black;
+    border-radius: 15px;
+    padding-top: 5px; padding-right: 30px; padding-left: 30px; padding-bottom: 5px;
+    margin: 10px;
+    background-color: coral;
+    color: white;
+    cursor: pointer;
+    float: left;
+}
+
+span.turned {
+    font-size: 100px;
+    border: solid black;
+    border-radius: 15px;
+    padding-top: 5px; padding-right: 30px; padding-left: 30px; padding-bottom: 5px;
+    margin: 10px;
+    background-color: lightblue;
+    color: lightblue;
+    cursor: pointer;
+    float: left;
+}
+
+span.invisible {
+    font-size: 100px;
+    border: dotted black;
+    border-radius: 15px;
+    padding-top: 5px; padding-right: 30px; padding-left: 30px; padding-bottom: 5px;
+    margin: 10px;
+    background-color:white;
+    color: white;
+    float: left;
+}
+
+a {
+    color: coral;
+    cursor: pointer;
+}
