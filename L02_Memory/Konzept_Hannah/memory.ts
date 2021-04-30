@@ -1,4 +1,4 @@
-namespace Memory {
+/*namespace Memory {
 
     // "Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content."
     // handleLoad
@@ -29,7 +29,7 @@ namespace Memory {
         startTimer(gamestartTime);
     }
 
-    function createCardDeck(_pairsAmount: number): void {
+    /*function createCardDeck(_pairsAmount: number): void {
         for (let i: number = 0; i <= _pairsAmount; i++) {
             let cardOne: Card // = {i, true}; -> ins Interface schreiben
             cardOne.value = i; // wird vor Zuweisung verwendet
@@ -98,3 +98,4 @@ namespace Memory {
     }
 
 }
+*/
