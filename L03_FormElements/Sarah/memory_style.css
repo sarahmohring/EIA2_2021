@@ -1,0 +1,76 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+div.startbutton {
+    padding: 10px;
+    width: 150px;
+    height: 55px;
+    font-size: 50px;
+    background-color: lightblue;
+    border-radius: 15px;
+    cursor: pointer;
+    display: inline;
+    margin: 20px;
+    margin-top: 160px;
+    
+}
+div.startbutton:hover {
+    background-color: rgba(173, 216, 230, 0.623);
+}
+
+div.playingfield {
+    border: solid;
+    border-radius: 15px;
+    width: 95%;
+    height: 100%;
+    margin-top: 30px;
+    padding: 20px;
+    overflow: auto;
+}
+
+span {
+    border: solid black;
+    border-radius: 15px;
+    padding: 5px;
+    margin: 10px;
+    cursor: pointer;
+    float: left;
+}
+
+span.turned {
+    text-indent: 120%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+fieldset {
+    justify-content: center;
+    border: solid black;
+    border-radius: 15px;
+    background-color: white;
+    color: black;
+    margin: 20px;
+}
+
+input {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+div#choice {
+    display: flex;
+    justify-content: center;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    color: rgb(66, 66, 66);
+}
+

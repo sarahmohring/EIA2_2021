@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory</title>
+    <link rel="stylesheet" href="memory_style.css" type="text/css" media="screen" />
+    <script src="memory_form.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Buchstaben-Memory</h1>
+        <p id="text">Bevor es losgeht, kannst du dein Spiel individualisieren! <br />Drücke einfach auf START, wenn du
+            fertig
+            bist.</p>
+    </header>
+    <div id="choice">
+        <form>
+            <fieldset id="form">
+                <b>Anzahl der Paare</b><br />
+                <input type="number" name="Stepper" step="1" min="5" max="25" value="12" />
+                <hr />
+                <b>Kartengröße</b><br />50px
+                <input type="range" name="Slider" min="50" max="150" step="10" value="100" />
+                150px
+                <hr />
+                <b>Farbe Spielfeld</b><br />
+                <input type="color" name="ColorField" placeholder="white" id="color" value="#ffffff">
+                <hr />
+                <b>Farbe Kartenrückseite</b><br />
+                <input type="color" name="ColorBack" placeholder="lightblue" id="color" value="#add8e6">
+                <hr />
+                <b>Farbe Kartenvorderseite</b><br />
+                <input type="color" name="ColorFront" placeholder="lightblue" id="color" value="#f8bca6">
+                <hr />
+                <b>Farbe Karteninhalt</b><br />
+                <input type="color" name="ColorFont" placeholder="lightcoral" id="color" value="#ff7f50">
+                <hr />
+                <b>Schriftart</b><br />
+                <input type="radio" name="Radiogroup" value="Arial" id="radio1" />
+                <label for="radio1">Arial</label>
+                <input type="radio" name="Radiogroup" value="Georgia" id="radio2" />
+                <label for="radio2">Georgia</label>
+                <input type="radio" name="Radiogroup" value="Courier" id="radio3" />
+                <label for="radio3">Courier</label>
+            </fieldset>
+        </form>
+
+        <div class="startbutton">START</div>
+    </div>
+</body>
+
+</html>
