@@ -18,7 +18,7 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
     let secondCard: string;
     let formData: FormData;
     let singleCard: HTMLElement;
-    let blocked: boolean = false;
+    let allCards: NodeList;
 
     function handleLoad(_event: Event): void {
 
@@ -78,6 +78,7 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
             // create span, add class "turned", assign letter
             singleCard = <HTMLSpanElement>document.createElement("span");
             singleCard.classList.add("turned");
+            singleCard.classList.add("cardcontent");
             singleCard.innerHTML = "" + cardDeckValues[i];
 
             // use slider value to adjust width, height, and font size of cards
@@ -92,15 +93,13 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
             // put cards on playing field, add pointerup listeners to all cards
             playingField.appendChild(singleCard);
 
-            if (blocked == false) { // ???
-                singleCard.addEventListener("pointerup", turnCards);
-            }
+            singleCard.addEventListener("pointerup", turnCards);
         }
     }
 
     function startTimer(): void {
+        timer++;
 
-        timer += 1;
     }
 
     function shuffleCards(): void {
@@ -117,10 +116,13 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
         }
     }
 
-    function turnCards(_event: PointerEvent): void {
+    function turnCards(_event: Event): void {
 
         // find card that's been clicked on
         clickedCard = <HTMLElement>_event.target;
+
+        // card can't be clicked twice
+        clickedCard.removeEventListener("pointerup", turnCards);
 
         if (clickedCard.classList.contains("turned")) {
 
@@ -144,8 +146,13 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
             // save letter on clickedCard1 to compare later
             firstCard = clickedCard1.innerText;
 
-        } else if (turnedCards == 2) { // == ?
-            blocked = true; // uninstall event listeners on all cards?? event listener installing as own function -> aufrufen nach blocked = true??
+        } else if (turnedCards == 2) {
+            // remove all event listeners so no more than 2 cards can be turned at once
+            allCards = document.querySelectorAll(".cardcontent");
+            for (let i: number = 0; i < allCards.length; i++) {
+                allCards[i].removeEventListener("pointerup", turnCards);
+            }
+
             setTimeout(compareCards, 2000);
 
             // save letter on clickedCard1 to compare later
@@ -177,17 +184,28 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
             clickedCard1.style.backgroundColor = <string>formData.get("ColorBack");
 
             turnedCards = 0;
+
+            // add event listeners back to both cards
+            clickedCard1.addEventListener("pointerup", turnCards);
+            clickedCard.addEventListener("pointerup", turnCards);
         }
 
         if (finishedPairs == pairs) {
             stopGame();
+        }
+
+        // add event listeners on all cards again
+        allCards = document.querySelectorAll(".cardcontent");
+        for (let i: number = 0; i < allCards.length; i++) {
+            allCards[i].addEventListener("pointerup", turnCards);
         }
     }
 
     function stopGame(): void {
 
         // stop timer
-        clearInterval(gameDuration);
+        // clearInterval(gameDuration);
+
 
         resetGame();
 

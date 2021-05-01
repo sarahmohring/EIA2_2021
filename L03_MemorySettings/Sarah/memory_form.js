@@ -18,7 +18,7 @@ var Memory;
     let secondCard;
     let formData;
     let singleCard;
-    let blocked = false;
+    let allCards;
     function handleLoad(_event) {
         // install event listener on start button
         startButton = document.querySelector("div.startbutton");
@@ -60,6 +60,7 @@ var Memory;
             // create span, add class "turned", assign letter
             singleCard = document.createElement("span");
             singleCard.classList.add("turned");
+            singleCard.classList.add("cardcontent");
             singleCard.innerHTML = "" + cardDeckValues[i];
             // use slider value to adjust width, height, and font size of cards
             singleCard.style.width = formData.get("Slider") + "px";
@@ -70,13 +71,11 @@ var Memory;
             singleCard.style.color = formData.get("ColorFont");
             // put cards on playing field, add pointerup listeners to all cards
             playingField.appendChild(singleCard);
-            if (blocked == false) { // ???
-                singleCard.addEventListener("pointerup", turnCards);
-            }
+            singleCard.addEventListener("pointerup", turnCards);
         }
     }
     function startTimer() {
-        timer += 1;
+        timer++;
     }
     function shuffleCards() {
         let tmp;
@@ -92,6 +91,8 @@ var Memory;
     function turnCards(_event) {
         // find card that's been clicked on
         clickedCard = _event.target;
+        // card can't be clicked twice
+        clickedCard.removeEventListener("pointerup", turnCards);
         if (clickedCard.classList.contains("turned")) {
             // turn card around to show front/letter
             clickedCard.classList.toggle("turned", false);
@@ -110,8 +111,12 @@ var Memory;
             // save letter on clickedCard1 to compare later
             firstCard = clickedCard1.innerText;
         }
-        else if (turnedCards == 2) { // == ?
-            blocked = true; // uninstall event listeners on all cards?? event listener installing as own function -> aufrufen nach blocked = true??
+        else if (turnedCards == 2) {
+            // remove all event listeners so no more than 2 cards can be turned at once
+            allCards = document.querySelectorAll(".cardcontent");
+            for (let i = 0; i < allCards.length; i++) {
+                allCards[i].removeEventListener("pointerup", turnCards);
+            }
             setTimeout(compareCards, 2000);
             // save letter on clickedCard1 to compare later
             secondCard = clickedCard.innerText;
@@ -135,14 +140,22 @@ var Memory;
             clickedCard1.classList.toggle("turned", true);
             clickedCard1.style.backgroundColor = formData.get("ColorBack");
             turnedCards = 0;
+            // add event listeners back to both cards
+            clickedCard1.addEventListener("pointerup", turnCards);
+            clickedCard.addEventListener("pointerup", turnCards);
         }
         if (finishedPairs == pairs) {
             stopGame();
         }
+        // add event listeners on all cards again
+        allCards = document.querySelectorAll(".cardcontent");
+        for (let i = 0; i < allCards.length; i++) {
+            allCards[i].addEventListener("pointerup", turnCards);
+        }
     }
     function stopGame() {
         // stop timer
-        clearInterval(gameDuration);
+        // clearInterval(gameDuration);
         resetGame();
         // show user their winning time
         alert("Herzlichen Glückwunsch! Deine Zeit: " + timer + " Sekunden");
