@@ -9,7 +9,7 @@ var Memory;
     let turnedCards = 0;
     let finishedPairs = 0;
     let timer = 0;
-    let gameDuration;
+    // let gameDuration: number;
     let startButton;
     let playingField;
     let clickedCard;
@@ -26,7 +26,7 @@ var Memory;
     }
     function handleStart(_event) {
         // start timer
-        gameDuration = setInterval(startTimer, 1000);
+        setInterval(startTimer, 1000);
         // hide form and start button after pressing start
         let form = document.querySelector("form");
         form.style.display = "none";

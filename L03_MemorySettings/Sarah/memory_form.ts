@@ -9,7 +9,7 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
     let turnedCards: number = 0;
     let finishedPairs: number = 0;
     let timer: number = 0;
-    let gameDuration: number;
+    // let gameDuration: number;
     let startButton: HTMLElement;
     let playingField: HTMLDivElement;
     let clickedCard: HTMLElement;
@@ -30,7 +30,7 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
     function handleStart(_event: PointerEvent): void {
 
         // start timer
-        gameDuration = setInterval(startTimer, 1000);
+        setInterval(startTimer, 1000);
 
         // hide form and start button after pressing start
         let form: HTMLFormElement = <HTMLFormElement>document.querySelector("form");
