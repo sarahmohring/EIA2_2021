@@ -41,7 +41,10 @@ namespace CanvasTest {
         let gradient: CanvasGradient = crc2.createLinearGradient(0, 0, 0, 100);
 
         gradient.addColorStop(0, "black");
+        gradient.addColorStop(.3, "red");
         gradient.addColorStop(.5, "red");
+        gradient.addColorStop(.7, "red");
+        gradient.addColorStop(.8, "gold");
         gradient.addColorStop(1, "gold");
 
         crc2.fillStyle = gradient;
@@ -54,5 +57,25 @@ namespace CanvasTest {
 
         // crc2.fillStyle = gradient1;
         // crc2.fillRect(0, 0, 200, 100);
+
+        let pattern: CanvasRenderingContext2D = <CanvasRenderingContext2D>document.createElement("canvas").getContext("2d");
+        pattern.canvas.width = 40;
+        pattern.canvas.height = 20;
+
+        pattern.fillStyle = "#fec";
+        pattern.fillRect(0, 0, pattern.canvas.width, pattern.canvas.height);
+        pattern.moveTo(0, 10);
+        pattern.lineTo(10, 10);
+        pattern.lineTo(20, 0);
+        pattern.lineTo(30, 0);
+        pattern.lineTo(40, 10);
+        pattern.lineTo(30, 20);
+        pattern.lineTo(20, 20);
+        pattern.lineTo(10, 10);
+        pattern.stroke();
+
+        crc2.fillStyle = crc2.createPattern(pattern.canvas, "repeat");
+        crc2.fillRect(0, 0, canvas.width, canvas.height);
+
     }
 }

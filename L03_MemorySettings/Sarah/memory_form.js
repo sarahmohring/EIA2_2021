@@ -117,7 +117,7 @@ var Memory;
             for (let i = 0; i < allCards.length; i++) {
                 allCards[i].removeEventListener("pointerup", turnCards);
             }
-            setTimeout(compareCards, 2000);
+            setTimeout(compareCards, 1000);
             // save letter on clickedCard1 to compare later
             secondCard = clickedCard.innerText;
         }
