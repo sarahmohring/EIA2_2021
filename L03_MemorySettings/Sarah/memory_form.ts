@@ -153,7 +153,7 @@ namespace Memory { // Code basiert zu einem Großteil auf Hannah Dürrs Bearbeit
                 allCards[i].removeEventListener("pointerup", turnCards);
             }
 
-            setTimeout(compareCards, 2000);
+            setTimeout(compareCards, 1000);
 
             // save letter on clickedCard1 to compare later
             secondCard = clickedCard.innerText;
