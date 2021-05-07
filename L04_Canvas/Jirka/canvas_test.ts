@@ -74,7 +74,7 @@ namespace CanvasTest {
         pattern.lineTo(10, 10);
         pattern.stroke();
 
-        crc2.fillStyle = crc2.createPattern(pattern.canvas, "repeat");
+        // crc2.fillStyle = crc2.createPattern(pattern.canvas, "repeat");
         crc2.fillRect(0, 0, canvas.width, canvas.height);
 
     }
