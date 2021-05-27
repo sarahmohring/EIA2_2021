@@ -1,5 +1,5 @@
 /*
-Aufgabe: L08.2 Blumenwiese
+Aufgabe: L08.2 Blumenwiese 
 Name: Sarah Mohring
 Matrikel: 268650
 Datum: 15.05.2021
@@ -23,7 +23,7 @@ namespace Blumenwiese {
     window.addEventListener("load", createCanvas);
 
     let canvas: HTMLCanvasElement;
-    let crc2: CanvasRenderingContext2D;
+    export let crc2: CanvasRenderingContext2D;
 
     function createCanvas(_event: Event): void {
 
