@@ -34,10 +34,10 @@ var Blumenwiese_obj;
         background.draw();
         let sun = new Blumenwiese_obj.Sun((new Blumenwiese_obj.Vector(Blumenwiese_obj.canvas.width * 0.1, Blumenwiese_obj.canvas.height * 0.12)));
         sun.draw();
-        let highMountain = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.08, Blumenwiese_obj.canvas.height * 0.15, "black", "white");
-        highMountain.draw();
-        let lowMountain = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.05, Blumenwiese_obj.canvas.height * 0.09, "#442b0b", "#c09682");
-        lowMountain.draw();
+        let higherMountains = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.08, Blumenwiese_obj.canvas.height * 0.15, "black", "white");
+        higherMountains.draw();
+        let lowerMountains = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.05, Blumenwiese_obj.canvas.height * 0.09, "#442b0b", "#c09682");
+        lowerMountains.draw();
         let trees = new Blumenwiese_obj.TreeLine(0, 15);
         trees.draw();
     }
@@ -56,8 +56,8 @@ var Blumenwiese_obj;
             lavender.draw();
         }
     }
-    function createBees(_nBee) {
-        for (let index = 0; index < _nBee; index++) {
+    function createBees(_amount) {
+        for (let i = 0; i < _amount; i++) {
             let randomScale = randomNumber(0.5, 1.7);
             let randomVelocity = new Blumenwiese_obj.Vector((randomNumber(-2.5, 2.5)), (randomNumber(-3, 0)));
             bees.push(new Blumenwiese_obj.Bee(new Blumenwiese_obj.Vector(Blumenwiese_obj.canvas.width / 2, Blumenwiese_obj.canvas.height * 0.95), new Blumenwiese_obj.Vector(randomVelocity.x, randomVelocity.y), randomScale));
