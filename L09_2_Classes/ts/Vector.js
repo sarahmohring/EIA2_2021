@@ -17,12 +17,6 @@ var Blumenwiese_obj;
             this.x += _addend.x;
             this.y += _addend.y;
         }
-        random(_minLength, _maxLength) {
-            let length = _minLength + Math.random() * (_maxLength - _minLength);
-            let direction = Math.random() * 2 * Math.PI;
-            this.set(Math.cos(direction), Math.sin(direction));
-            this.scale(length);
-        }
     }
     Blumenwiese_obj.Vector = Vector;
 })(Blumenwiese_obj || (Blumenwiese_obj = {}));

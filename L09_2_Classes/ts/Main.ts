@@ -30,7 +30,10 @@ namespace Blumenwiese_obj {
         createBackground();
         createClouds();
         createFlowers(canvas.width / 40);
-        drawBeehive();
+        
+        let beehive: Beehive = new Beehive();
+        beehive.draw();
+        
         createBees(10);
 
         imageData = crc2.getImageData(0, 0, canvas.width, canvas.height);
@@ -40,14 +43,20 @@ namespace Blumenwiese_obj {
 
     function createBackground(): void {
 
-        let horizon: number = canvas.height * 0.38;
-        let posMountains: Vector = new Vector(0, horizon);
+        let background: Background = new Background;
+        background.draw();
 
-        drawBackground(horizon);
-        drawSun(new Vector(canvas.width * 0.1, canvas.height * 0.12));
-        drawMountains(posMountains, canvas.height * 0.08, canvas.height * 0.15, "black", "white");
-        drawMountains(posMountains, canvas.height * 0.05, canvas.height * 0.09, "#442b0b", "#c09682");
-        drawTrees(0, 15);
+        let sun: Sun = new Sun((new Vector(canvas.width * 0.1, canvas.height * 0.12)));
+        sun.draw();
+
+        let highMountain: MountainRange = new MountainRange(new Vector(0, canvas.height * 0.38), canvas.height * 0.08, canvas.height * 0.15, "black", "white");
+        highMountain.draw();
+        let lowMountain: MountainRange = new MountainRange(new Vector(0, canvas.height * 0.38), canvas.height * 0.05, canvas.height * 0.09, "#442b0b", "#c09682");
+        lowMountain.draw();
+        
+        let trees: TreeLine = new TreeLine(0, 15);
+        trees.draw();
+        
     }
 
     function createClouds(): void {

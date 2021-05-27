@@ -23,19 +23,23 @@ var Blumenwiese_obj;
         createBackground();
         createClouds();
         createFlowers(Blumenwiese_obj.canvas.width / 40);
-        Blumenwiese_obj.drawBeehive();
+        let beehive = new Blumenwiese_obj.Beehive();
+        beehive.draw();
         createBees(10);
         imageData = Blumenwiese_obj.crc2.getImageData(0, 0, Blumenwiese_obj.canvas.width, Blumenwiese_obj.canvas.height);
         animate();
     }
     function createBackground() {
-        let horizon = Blumenwiese_obj.canvas.height * 0.38;
-        let posMountains = new Blumenwiese_obj.Vector(0, horizon);
-        Blumenwiese_obj.drawBackground(horizon);
-        Blumenwiese_obj.drawSun(new Blumenwiese_obj.Vector(Blumenwiese_obj.canvas.width * 0.1, Blumenwiese_obj.canvas.height * 0.12));
-        Blumenwiese_obj.drawMountains(posMountains, Blumenwiese_obj.canvas.height * 0.08, Blumenwiese_obj.canvas.height * 0.15, "black", "white");
-        Blumenwiese_obj.drawMountains(posMountains, Blumenwiese_obj.canvas.height * 0.05, Blumenwiese_obj.canvas.height * 0.09, "#442b0b", "#c09682");
-        Blumenwiese_obj.drawTrees(0, 15);
+        let background = new Blumenwiese_obj.Background;
+        background.draw();
+        let sun = new Blumenwiese_obj.Sun((new Blumenwiese_obj.Vector(Blumenwiese_obj.canvas.width * 0.1, Blumenwiese_obj.canvas.height * 0.12)));
+        sun.draw();
+        let highMountain = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.08, Blumenwiese_obj.canvas.height * 0.15, "black", "white");
+        highMountain.draw();
+        let lowMountain = new Blumenwiese_obj.MountainRange(new Blumenwiese_obj.Vector(0, Blumenwiese_obj.canvas.height * 0.38), Blumenwiese_obj.canvas.height * 0.05, Blumenwiese_obj.canvas.height * 0.09, "#442b0b", "#c09682");
+        lowMountain.draw();
+        let trees = new Blumenwiese_obj.TreeLine(0, 15);
+        trees.draw();
     }
     function createClouds() {
         clouds.push(new Blumenwiese_obj.Cloud(new Blumenwiese_obj.Vector(Blumenwiese_obj.canvas.width * 0.8, Blumenwiese_obj.canvas.height * 0.1)));
@@ -76,4 +80,4 @@ var Blumenwiese_obj;
     }
     Blumenwiese_obj.randomNumber = randomNumber;
 })(Blumenwiese_obj || (Blumenwiese_obj = {}));
-//# sourceMappingURL=blumenwiese_obj.js.map
+//# sourceMappingURL=Main.js.map
