@@ -93,12 +93,12 @@ namespace Blumenwiese_obj {
         requestAnimationFrame(animate);
         crc2.clearRect(0, 0, canvas.width, canvas.height);
         crc2.putImageData(imageData, 0, 0);
-
-        for (let i: number = 0; i < bees.length; i++) {
-            bees[i].update();
-        }
+        
         for (let i: number = 0; i < clouds.length; i++) {
             clouds[i].update();
+        }
+        for (let i: number = 0; i < bees.length; i++) {
+            bees[i].update();
         }
     }
 

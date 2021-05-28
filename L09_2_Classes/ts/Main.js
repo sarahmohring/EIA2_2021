@@ -67,11 +67,11 @@ var Blumenwiese_obj;
         requestAnimationFrame(animate);
         Blumenwiese_obj.crc2.clearRect(0, 0, Blumenwiese_obj.canvas.width, Blumenwiese_obj.canvas.height);
         Blumenwiese_obj.crc2.putImageData(imageData, 0, 0);
-        for (let i = 0; i < bees.length; i++) {
-            bees[i].update();
-        }
         for (let i = 0; i < clouds.length; i++) {
             clouds[i].update();
+        }
+        for (let i = 0; i < bees.length; i++) {
+            bees[i].update();
         }
     }
     // random number between a minimum and a maximum input
