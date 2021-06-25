@@ -1,6 +1,7 @@
 namespace BlumenwieseAdv {
-    export class Bee extends Moveable {
 
+    export class Bee extends Moveable {
+        
         public draw(): void {
 
             crc2.save();
@@ -15,7 +16,7 @@ namespace BlumenwieseAdv {
             crc2.ellipse(0, 0, 7, 10, 0, 0, 2 * Math.PI);
             crc2.fill();
             crc2.stroke();
-            
+
             // stripes 
             crc2.beginPath();
             crc2.rect(-6.5, 2, 12.8, 3);
