@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogis Fußball-Simulator</title>
+    <link rel="stylesheet" href="fussball.css" type="text/css" media="screen" />
+    <script src="TS/Vector.js"></script>
+    <script src="TS/Ball.js"></script>
+    <script src="TS/Person.js"></script>
+    <script src="TS/Referee.js"></script>
+    <script src="TS/AssistantReferee.js"></script>
+    <script src="TS/Player.js"></script>
+    <script src="TS/Main.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 id="title">Willkommen, lieber Jogi!</h1>
+        <p id="text">Bevor es losgeht, kannst du deine Mannschaften individualisieren! <br />Drücke einfach auf START,
+            wenn du fertig bist.</p>
+    </header>
+    <div id="flexContainer">
+        <form>
+            <fieldset id="form">
+                <!-- Auswahl Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler -->
+                <h3>Team 1</h3>
+                <b>Geschwindigkeits-Range</b><br />
+                langsamster Spieler
+                <input type="range" name="SliderSpeed1Min" min="0.01" max="0.5" step="0.01" value="0.25" />
+                <input type="range" name="SliderSpeed1Max" min="0.5" max="1" step="0.01" value="0.75" />
+                schnellster Spieler
+                <br /><b>Präzisions-Range</b><br />
+                schlechtester Spieler
+                <input type="range" name="SliderPrecision1Min" min="0.01" max="0.5" step="0.01" value="0.25" />
+                <input type="range" name="SliderPrecision1Max" min="0.5" max="1" step="0.01" value="0.75" />
+                bester Spieler
+                <br /><b>Trikotfarbe</b><br />
+                <input type="color" name="ColorTeam1" placeholder="white" id="color" value="#ff0000">
+                <hr />
+                <h3>Team 2</h3>
+                <b>Geschwindigkeits-Range</b><br />
+                langsamster Spieler
+                <input type="range" name="SliderSpeed2Min" min="0.01" max="0.5" step="0.01" value="0.25" />
+                <input type="range" name="SliderSpeed2Max" min="0.5" max="1" step="0.01" value="0.75" />
+                schnellster Spieler
+                <br /><b>Präzisions-Range</b><br />
+                schlechtester Spieler
+                <input type="range" name="SliderPrecision2Min" min="0.01" max="0.5" step="0.01" value="0.25" />
+                <input type="range" name="SliderPrecision2Max" min="0.5" max="1" step="0.01" value="0.75" />
+                bester Spieler
+                <br /><b>Trikotfarbe</b><br />
+                <input type="color" name="ColorTeam2" placeholder="lightblue" id="color" value="#0000ff">
+            </fieldset>
+        </form>
+        <div id="flexInstr">
+            <div id="instrText">
+                <h2>Spielanleitung</h2>
+                <p>Hier kannst du zunächst die Trikotfarben sowie die Schnelligkeit und Präzision deiner Mannschaft
+                    festlegen. <br>
+                    Im Simulator kannst du, sobald ein Spieler den Ball erreicht, per Klick auswählen, wohin er schießen
+                    soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss auch mal daneben gehen!<br>
+                    Per Klick/Mauseingabe
+                    <!-- anpassen!--> kannst du dir außerdem Infos zu ausgewählten Spielern anzeigen lassen.<br>
+                    Außerdem kannst du Spieler vom Platz entfernen und auswechseln lassen.<br><br>
+                    Viel Spaß mit dem Fußball-Simulator!
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="startbutton">START</div>
+    <div id="flexCanvas">
+        <div id="canvasContainer">
+            <canvas></canvas>
+        </div>
+        <div id="spielstand">
+            <h2>Spielstand</h2>
+            <h1>0:0</h1>
+            <h3>momentan am Ball:</h3>
+            <p>kein Spieler</p>
+            <hr />
+            <h3>gewählter Spieler:</h3>
+            <p><b>Team:</b> Team 1</p>
+            <p><b>Position:</b> Mittelstürmer</p>
+            <p><b>Trikotnummer:</b> 11</p>
+            <p><b>Geschwindigkeit:</b> 13/15</p>
+            <p><b>Präzision:</b> 5/12</p>
+            <div id="auswechseln">
+                <span>vom Spielfeld entfernen</span>
+                <span>neuen Spieler einsetzen</span>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
