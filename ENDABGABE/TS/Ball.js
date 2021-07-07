@@ -4,20 +4,34 @@ var Fussball;
     class Ball {
         constructor() {
             this.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+            this.hitRadius = 7;
         }
         // constructor mit draw Aufruf?
+        // position als Startposition festhalten?? - _position.copy();
         move(_event /*, _precision: number*/) {
             // ball needs to go towards clicked position (but depending on distance of destination and precision of shooting player (as PARAMETERS?))
             // if (this.position.x < 10 || this.position.x > 980)
             //     this.draw();
             // if (this.position.y < 10 || this.position.y > 640)
             //     this.draw();
-            // 
-            let difference = new Fussball.Vector(_event.offsetX - this.position.x, _event.offsetY - this.position.y);
-            difference.scale(1 / 30); // controls ball speed
-            this.position.add(difference);
-            this.draw();
+            // ???
+            // let difference: Vector = new Vector(_event.offsetX - this.position.x, _event.offsetY - this.position.y);
+            // difference.scale(1 / 30); // controls ball speed
+            // this.position.add(difference);
+            // this.draw();
         }
+        // HALIS
+        shot(_position) {
+            if (Fussball.stop == true) {
+                //let x: number = _pos.screenX;
+                //let y: number = _pos.screenY;
+                //console.log(x, y);
+                //this.position.x = x;
+                //this.position.y = y;
+                this.position = _position.copy();
+            }
+        }
+        // ENDE HALIS
         draw() {
             Fussball.crc2.save();
             Fussball.crc2.translate(this.position.x, this.position.y);

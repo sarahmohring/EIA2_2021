@@ -19,13 +19,14 @@
 <body>
     <header>
         <h1 id="title">Willkommen, lieber Jogi!</h1>
-        <p id="text">Bevor es losgeht, kannst du deine Mannschaften individualisieren! <br />Drücke einfach auf START,
+        <p id="text">Die EM lief ja nicht so toll... immerhin gibt es noch den Fußballsimulator :) <br><br>Bevor es
+            losgeht, kannst du deine Mannschaften individualisieren! <br />Drücke einfach auf START,
             wenn du fertig bist.</p>
     </header>
     <div id="flexContainer">
         <form>
             <fieldset id="form">
-                <!-- Auswahl Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler -->
+                <!-- Auswahl Trikotfarben, Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler -->
                 <h3>Team 1</h3>
                 <b>Geschwindigkeits-Range</b><br />
                 langsamster Spieler
@@ -58,13 +59,12 @@
         <div id="flexInstr">
             <div id="instrText">
                 <h2>Spielanleitung</h2>
+                <!-- anpassen!-->
                 <p>Hier kannst du zunächst die Trikotfarben sowie die Schnelligkeit und Präzision deiner Mannschaft
-                    festlegen. <br>
-                    Im Simulator kannst du, sobald ein Spieler den Ball erreicht, per Klick auswählen, wohin er schießen
-                    soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss auch mal daneben gehen!<br>
-                    Per Klick/Mauseingabe
-                    <!-- anpassen!--> kannst du dir außerdem Infos zu ausgewählten Spielern anzeigen lassen.<br>
-                    Außerdem kannst du Spieler vom Platz entfernen und auswechseln lassen.<br><br>
+                    festlegen. <br> Im Simulator kannst du, sobald ein Spieler den Ball erreicht, per Klick auswählen,
+                    wohin er schießen soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss auch mal
+                    daneben gehen!<br> Per Shift+Click auf einen Spieler kannst du dir außerdem Infos zu diesem Spieler
+                    anzeigen lassen.<br> Außerdem kannst du Spieler vom Platz entfernen und auswechseln lassen.<br><br>
                     Viel Spaß mit dem Fußball-Simulator!
                 </p>
             </div>
@@ -77,23 +77,32 @@
         </div>
         <div id="spielstand">
             <h2>Spielstand</h2>
-            <h1>0:0</h1>
+            <div id="score">
+                <div id="team1"></div>
+                <h1 id=scoreTeam1>0</h1>
+                <h1>:</h1>
+                <h1 id="scoreTeam2">0</h1>
+                <div id="team2"></div>
+            </div>
             <h3>momentan am Ball:</h3>
             <p>kein Spieler</p>
             <hr />
             <h3>gewählter Spieler:</h3>
-            <p><b>Team:</b> Team 1</p>
-            <p><b>Position:</b> Mittelstürmer</p>
-            <p><b>Trikotnummer:</b> 11</p>
-            <p><b>Geschwindigkeit:</b> 13/15</p>
-            <p><b>Präzision:</b> 5/12</p>
+            <p id="shift"><i>(Shift+Click)</i></p>
+            <p><b>Team:</b></p>
+            <div id="infoTeam"></div>
+            <p id="infoNumber"><b>Trikotnummer:</b> 11</p>
+            <p id="infoSpeed"><b>Geschwindigkeit:</b> 13/15</p>
+            <p id="infoPrecision"><b>Präzision:</b> 5/12</p>
             <div id="auswechseln">
                 <span>vom Spielfeld entfernen</span>
                 <span>neuen Spieler einsetzen</span>
             </div>
-
         </div>
     </div>
+    <footer id="footer">
+        &#169; 2021 by Sarah Mohring, MKB2, Matrikel-Nr. 268650, HFU
+    </footer>
 </body>
 
 </html>

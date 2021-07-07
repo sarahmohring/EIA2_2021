@@ -2,29 +2,35 @@
 var Fussball;
 (function (Fussball) {
     class Player extends Fussball.Person {
-        constructor(_position, _color, _shirtNumber, _velocity) {
-            super(_position, _velocity);
-            this.zone = 300;
+        constructor(_position, _color, _shirtNumber, _speedMin, _speedMax, _precisionMin, _precisionMax) {
+            super(_position);
+            this.hitRadius = 12.5;
             this.color = _color;
-            this.startPosition = _position;
+            this.startPosition = _position.copy();
             this.shirtNumber = _shirtNumber;
+            this.precision = Fussball.randomNumber(_precisionMin, _precisionMax);
+            this.speed = Fussball.randomNumber(_speedMin, _speedMax);
         }
         move() {
-            // switch case?
-            // // player can move anywhere within the outer lines
-            // s. Hinweis Aufgabenstellung
-            // if (this.position.x < 25 || this.position.x > 975)
-            //     this.velocity.x = -this.velocity.x;
-            // if (this.position.y < 25 || this.position.y > 625)
-            //     this.velocity.y = -this.velocity.y;
-            // this.position.x += this.velocity.x;
-            // this.position.y += this.velocity.y;
             // distance to ball
-            // let difference: Vector = Vector.getDifference(this.target.position, this.position);
-            // new Vector(this.target.position.x - this.position.x, this.target.position.y - this.position.y);
-            // let length: number = Math.abs(Math.sqrt((Math.pow(difference.x, 2) + (Math.pow(difference.y, 2))))); // sqrt((difference.x)^2)+(difference.y)^2))
-            // difference.scale(50 / length); // controls PLAYER speed
-            // this.position.add(difference);
+            let distance = Fussball.Vector.getDifference(Fussball.ball.position, this.position);
+            if (distance.length < 300) { // only start moving if ball is within 300px (=30m) radius
+                // players move towards ball
+                if (distance.length > 20) { // 20 = radius player + ball
+                    this.position.x += distance.x * 0.01 * this.speed;
+                    this.position.y += distance.y * 0.01 * this.speed;
+                }
+                // first player reaches ball
+                else {
+                    Fussball.stop = true;
+                }
+            }
+            else {
+                // player back to starting position
+                let backToStart = Fussball.Vector.getDifference(this.startPosition, this.position);
+                this.position.x += backToStart.x * 0.01 * this.speed;
+                this.position.y += backToStart.y * 0.01 * this.speed;
+            }
             this.draw();
         }
         draw() {

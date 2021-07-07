@@ -9,13 +9,17 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 30px;
+}
+
+h1 {
+    margin-top: 0px;
 }
 
 #startbutton {
-    padding: 10px;
+    padding: 5px;
     width: 20%;
-    height: 55px;
+    height: 50px;
     font-size: 50px;
     background-color: salmon;
     border-radius: 15px;
@@ -39,7 +43,7 @@ fieldset {
     background-color: white;
     color: rgb(87, 42, 37);
     margin: 0 auto;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     width: 90%;
 }
 
@@ -97,6 +101,31 @@ canvas {
     padding-bottom: -5px;
 }
 
+#score {
+    display: flex;
+    flex-direction: row;
+}
+
+#shift {
+    margin-top: -20px;
+}
+
+#team1, #team2 {
+    width: 30px;
+    height: 30px;
+    border: solid black;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+#infoTeam {
+    width: 20px;
+    height: 20px;
+    border: solid black;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
 #auswechseln {
     display: flex;
     flex-direction: row;
@@ -114,4 +143,11 @@ span {
 
 span:hover {
     background-color: rgba(250, 128, 114, 0.8);
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
 }

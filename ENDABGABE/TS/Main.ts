@@ -2,12 +2,14 @@ namespace Fussball {
 
     export let canvas: HTMLCanvasElement;
     export let crc2: CanvasRenderingContext2D;
+    export let people: Person[] = [];
+    export let ball: Ball;
+    export let stop: boolean = false;
+    export let scoreTeam1: number = 0;
+    export let scoreTeam2: number = 0;
     let startButton: HTMLElement;
     let formData: FormData;
-    let people: Person[] = [];
-    let ball: Ball;
     let imageData: ImageData;
-    let clicked: boolean = false;
 
     window.addEventListener("load", handleLoad);
 
@@ -20,7 +22,7 @@ namespace Fussball {
 
     function handleStart(_event: MouseEvent): void {
 
-        // hide intro text, form, instructions, and start button after pressing start
+        // hide intro text, form, instructions, and start button by pressing start
         let flexDiv: HTMLDivElement = <HTMLDivElement>document.querySelector("#flexContainer");
         let flexCanvas: HTMLDivElement = <HTMLDivElement>document.querySelector("#flexCanvas");
         let spielstand: HTMLDivElement = <HTMLDivElement>document.querySelector("#spielstand");
@@ -54,33 +56,42 @@ namespace Fussball {
 
     function handleForm(): void {
 
-        // Form auswerten
+        // save all form values in variables
         formData = new FormData(document.forms[0]);
 
+        // team 1
         let color1: string = <string>formData.get("ColorTeam1")?.toString();
-        let color2: string = <string>formData.get("ColorTeam2")?.toString();
-
-
-        // sinnvolle Werte???
         let speedMax1: number = Number(<unknown>formData.get("SliderSpeed1Max"));
         let speedMin1: number = Number(<unknown>formData.get("SliderSpeed1Min"));
         let precisionMax1: number = Number(<unknown>formData.get("SliderPrecision1Max"));
         let precisionMin1: number = Number(<unknown>formData.get("SliderPrecision1Min"));
 
+        // team 2
+        let color2: string = <string>formData.get("ColorTeam2")?.toString();
         let speedMax2: number = Number(<unknown>formData.get("SliderSpeed2Max"));
         let speedMin2: number = Number(<unknown>formData.get("SliderSpeed2Min"));
         let precisionMax2: number = Number(<unknown>formData.get("SliderPrecision2Max"));
         let precisionMin2: number = Number(<unknown>formData.get("SliderPrecision2Min"));
 
-        console.log(speedMax1, speedMin1, precisionMax1, precisionMax2);
+        // display team colors in info div
+        let circleTeam1: HTMLElement = <HTMLElement>document.getElementById("team1");
+        circleTeam1.style.backgroundColor = color1;
+        let circleTeam2: HTMLElement = <HTMLElement>document.getElementById("team2");
+        circleTeam2.style.backgroundColor = color2;
 
-        ball = new Ball(); // ???
-        canvas.addEventListener("click", shoot);
+        ball = new Ball();
+
+        // create teams with form values
+        createTeam1(color1, speedMax1, speedMin1, precisionMax1, precisionMin1);
+        createTeam2(color2, speedMax2, speedMin2, precisionMax2, precisionMin2);
 
         createReferees();
 
-        createTeam1(1, color1, speedMax1, speedMin1, precisionMax1, precisionMin1);
-        createTeam2(2, color2, speedMax2, speedMin2, precisionMax2, precisionMin2);
+        canvas.addEventListener("click", shootBall);
+
+        canvas.addEventListener("click", clickedPerson); // shift + click
+
+        // trackScore(); // wann aufrufen?? funktioniert im Prinzip
 
         animate();
     }
@@ -90,110 +101,118 @@ namespace Fussball {
         people.push(new AssistantReferee(new Vector(25, 625)));
         people.push(new AssistantReferee(new Vector(975, 25)));
         people.push(new Referee(new Vector(500, 625)));
-
     }
 
-    function createTeam1(_team: number /* Teamzugehörigkeit */, _color: string, _speedMax: number, _speedMin: number, _precisionMax: number, _precisionMin: number): void {
+    function createTeam1(_color: string, _speedMax: number, _speedMin: number, _precisionMax: number, _precisionMin: number): void {
 
-        // Torwart
-        people.push(new Player(new Vector(25, 325), _color, 1));
-        // Innenverteidiger links
-        people.push(new Player(new Vector(200, 100), _color, 2));
-        // Innenverteidiger rechts
-        people.push(new Player(new Vector(200, 550), _color, 3));
-        // Außenverteidiger links
-        people.push(new Player(new Vector(400, 50), _color, 4));
-        // Außenverteidiger rechts
-        people.push(new Player(new Vector(400, 600), _color, 5));
-        // Mittelverteidiger
-        people.push(new Player(new Vector(350, 325), _color, 6));
-        // Mittelfeldspieler links
-        people.push(new Player(new Vector(550, 125), _color, 7));
-        // Mittelfeldspieler rechts
-        people.push(new Player(new Vector(550, 525), _color, 8));
-        // Außenstürmer links
-        people.push(new Player(new Vector(850, 175), _color, 9));
-        // Außenstürmer rechts
-        people.push(new Player(new Vector(850, 475), _color, 10));
-        // Mittelstürmer
-        people.push(new Player(new Vector(725, 325), _color, 11));
+        let positionsTeam1: number[][] = [[25, 325], [200, 100], [200, 550], [400, 50], [400, 600], [350, 325], [550, 125], [550, 525], [850, 175], [850, 475], [725, 325]];
 
-        // for-Schleife random velocity & precision -> nur Team 1 ! oder Trikotnummer (dann Team 2 Nummern 12+)
+        for (let i: number = 0; i <= 10; i++) {
+            people.push(new Player(new Vector(positionsTeam1[i][0], positionsTeam1[i][1]), _color, i + 1, _speedMin, _speedMax, _precisionMin, _precisionMax));
+        }
     }
 
-    function createTeam2(_team: number /* Teamzugehörigkeit */, _color: string, _speedMax: number, _speedMin: number, _precisionMax: number, _precisionMin: number): void {
+    function createTeam2(_color: string, _speedMax: number, _speedMin: number, _precisionMax: number, _precisionMin: number): void {
 
-        // Torwart
-        people.push(new Player(new Vector(975, 325), _color, 1));
-        // Innenverteidiger links
-        people.push(new Player(new Vector(800, 550), _color, 2));
-        // Innenverteidiger rechts
-        people.push(new Player(new Vector(800, 100), _color, 3));
-        // Außenverteidiger links
-        people.push(new Player(new Vector(600, 600), _color, 4));
-        // Außenverteidiger rechts
-        people.push(new Player(new Vector(600, 50), _color, 5));
-        // Mittelverteidiger
-        people.push(new Player(new Vector(650, 325), _color, 6));
-        // Mittelfeldspieler links
-        people.push(new Player(new Vector(450, 525), _color, 7));
-        // Mittelfeldspieler rechts
-        people.push(new Player(new Vector(450, 125), _color, 8));
-        // Außenstürmer links
-        people.push(new Player(new Vector(150, 475), _color, 9));
-        // Außenstürmer rechts
-        people.push(new Player(new Vector(150, 175), _color, 10));
-        // Mittelstürmer
-        people.push(new Player(new Vector(275, 325), _color, 11));
+        let positionsTeam1: number[][] = [[975, 325], [800, 550], [800, 100], [600, 600], [600, 50], [650, 325], [450, 525], [450, 125], [150, 475], [150, 175], [275, 325]];
+
+        for (let i: number = 0; i <= 10; i++) {
+            people.push(new Player(new Vector(positionsTeam1[i][0], positionsTeam1[i][1]), _color, i + 1, _speedMin, _speedMax, _precisionMin, _precisionMax));
+        }
     }
 
-    function animate(): void { // roughly based on Asteroids code
+    function animate(): void {
 
-        // if (/**/ )  hier abfragen ob gerade ein Spieler am Ball ist - wenn nein, dann animieren, 
-        // wenn doch dann Animation aussetzen und stattdessen auf Klick warten (click listener installieren?)
-        // währenddessen alle Objekte weiter an ihrer Position malen?
-        // oder Moveables.velocity = 0,0 ?
         requestAnimationFrame(animate);
         crc2.clearRect(0, 0, canvas.width, canvas.height);
 
-        ball.draw();
-        // canvas.addEventListener("click", shoot);
-
         for (let allPeople of people) {
-            allPeople.move();
+            if (stop == false) // hier if (players.hitBall == false)
+                allPeople.move();
+            else
+                allPeople.draw();
         }
 
-        imageData = crc2.getImageData(0, 0, canvas.width, canvas.height); // aktuellen Stand speichern, um während Schuss anzuzeigen
-
-    }
-
-    function shoot(_event: MouseEvent): void {
-
-        clicked = false; // wenn player.position = ball.position --> clicked = true;
-
-        // // reguläre Animation stoppt NOCH NICHT
-
-        // // requestAnimationFrame(shoot); -> geht nicht wegen _event
-        // // update(_timeslice??) mit setInterval
-
-        // // cancelAnimationFrame();
-        // crc2.clearRect(0, 0, canvas.width, canvas.height);
-        // crc2.putImageData(imageData, 0, 0);
-
+        ball.draw();
         // ball.move(_event);
-
-        // // animate();
+    }
+    
+    function shootBall(_event: MouseEvent): void {
+        if (_event.shiftKey == false) {
+            // HALIS
+            let rect: DOMRect = canvas.getBoundingClientRect();
+            let x: number = _event.clientX - rect.left;
+            let y: number = _event.clientY - rect.top;
+            ball.shot(new Vector(x, y));
+            stop = false;
+        }
+        // ENDE HALIS
     }
 
-    function getInfo(): void {
-        // bei click und shift
-
-        // check welcher Player gerade angeklickt wurde s. Asteroids Code (durch allPeople Array Positions durch)
+    // register shift+click on a player to display player info - Jirka - eiaSteroids
+    function clickedPerson(_event: MouseEvent): void { // PROBLEM: Player-Eigenschaften nicht über Person abrufbar
+        
+        if (_event.shiftKey) {
+            let hotspot: Vector = new Vector(_event.clientX - crc2.canvas.offsetLeft, _event.clientY - crc2.canvas.offsetTop);
+            let personClicked: Person | null = getClickedPerson(hotspot);
+            console.log(personClicked);
+            if (personClicked)
+                displayInfo(personClicked);
+        }
     }
+
+    function getClickedPerson(_hotspot: Vector): Person | null { // Jirka - eiaSteroids
+        for (let person of people) {
+            if (person.isClicked(_hotspot))
+                return person;
+        }
+        return null;
+    }
+     
+
+    function displayInfo(_player: Person): void { // PROBLEM: kein Zugriff auf Objekteigenschaften
+        // bei click und shift - aktuell bei CLICK
+
+        let infoTest: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
+        infoTest.innerHTML = "<b>TEST:</b> " + _player.hitRadius;
+
+        // let infoTeam: HTMLElement = <HTMLElement>document.getElementById("infoTeam");
+        // infoTeam.style.backgroundColor = _player.color;
+
+        // let infoPosition: HTMLElement = <HTMLElement>document.getElementById("infoPosition");
+        // infoPosition.innerHTML = "<b>Position:</b> " + _player.gamePosition;
+
+        // let infoNumber: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
+        // infoNumber.innerHTML = "<b>Trikotnummer:</b> " + _player.shirtNumber;
+
+        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed");
+        // infoSpeed.innerHTML = "<b>Geschwindigkeit:</b> " + _player.speed;
+
+        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
+        // infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision;
+    }
+
+    // function trackScore(): void {
+    //     if (ball.position.x == 25) { // so score doesnt keep going up!? - will still happen if called from animation method
+    //         if (ball.position.y >= 250 && ball.position.y <= 400) {
+    //             // console.log("scoreTeam2");
+    //             scoreTeam1++;
+    //             let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
+    //             team1Score.innerHTML = scoreTeam1.toString();
+    //         }
+    //     }
+    //     if (ball.position.x == 975) {
+    //         if (ball.position.y >= 250 && ball.position.y <= 400) {
+    //             // console.log("scoreTeam2");
+    //             scoreTeam2++;
+    //             let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
+    //             team2Score.innerHTML = scoreTeam2.toString();
+    //         }
+    //     }
+    // }
 
     // random number between a minimum and a maximum input
     export function randomNumber(_min: number, _max: number): number {
         return Math.random() * (_max - _min) + _min;
     }
-
 }
