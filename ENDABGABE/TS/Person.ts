@@ -3,6 +3,7 @@ namespace Fussball {
     export abstract class Person {
 
         public hitRadius: number;
+        public expendable: boolean = false;
         protected position: Vector;
         protected velocity: Vector;
 

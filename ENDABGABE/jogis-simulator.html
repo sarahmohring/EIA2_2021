@@ -60,12 +60,18 @@
             <div id="instrText">
                 <h2>Spielanleitung</h2>
                 <!-- anpassen!-->
-                <p>Hier kannst du zunächst die Trikotfarben sowie die Schnelligkeit und Präzision deiner Mannschaft
-                    festlegen. <br> Im Simulator kannst du, sobald ein Spieler den Ball erreicht, per Klick auswählen,
-                    wohin er schießen soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss auch mal
-                    daneben gehen!<br> Per Shift+Click auf einen Spieler kannst du dir außerdem Infos zu diesem Spieler
-                    anzeigen lassen.<br> Außerdem kannst du Spieler vom Platz entfernen und auswechseln lassen.<br><br>
-                    Viel Spaß mit dem Fußball-Simulator!
+                <p>Hier kannst du zunächst Trikotfarben sowie Schnelligkeit und Präzision deiner Mannschaften
+                    festlegen.<br>Für Schnelligkeit und Präzision kannst du jeweils den besten und schlechtesten Wert
+                    auswählen, den deine Mannschaften haben sollen. Die Spieler bekommen dann jeweils
+                    Zufallswerte zwischen diesen Werten zugewiesen. <br><br> Im Simulator kannst du, sobald ein Spieler
+                    den Ball erreicht, per Strg+Click
+                    auswählen, wohin er schießen soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss
+                    auch mal daneben gehen!<br><br> Per Shift+Click auf einen Spieler kannst du dir Infos zum
+                    angeklickten Spieler anzeigen lassen.<br><br> Außerdem kannst du Spieler vom Platz entfernen (per
+                    Alt+Click auf den jeweiligen Spieler) und neue Spieler an einer beliebigen Stelle auf dem Spielfeld
+                    hinzufügen (a+Click für Team 1, y+Click für Team 2).<br><br>
+                    Keine Sorge, die Tastenkombinationen werden auch noch während des Spiels angezeigt :)<br><br><br>
+                    Viel Spaß mit deinem Fußball-Simulator!
                 </p>
             </div>
         </div>
@@ -88,16 +94,21 @@
             <p>kein Spieler</p>
             <hr />
             <h3>gewählter Spieler:</h3>
-            <p id="shift"><i>(Shift+Click)</i></p>
-            <p><b>Team:</b></p>
-            <div id="infoTeam"></div>
+            <div id="teamDiv">
+                <p><b>Team:</b></p>
+                <div id="infoTeam"></div>
+            </div>
             <p id="infoNumber"><b>Trikotnummer:</b> 11</p>
             <p id="infoSpeed"><b>Geschwindigkeit:</b> 13/15</p>
             <p id="infoPrecision"><b>Präzision:</b> 5/12</p>
-            <div id="auswechseln">
-                <span>vom Spielfeld entfernen</span>
-                <span>neuen Spieler einsetzen</span>
-            </div>
+            <hr />
+            <h3>Tastenkombinationen:</h3>
+            <p><i>Strg+Click</i> - Ball schießen<br>
+                <i>Shift+Click</i> - Spielerinfos anzeigen<br>
+                <i>Alt+Click</i> - Spieler entfernen<br>
+                <i>a+Click</i> - neuer Spieler (Team 1)<br>
+                <i>y+Click</i> - neuer Spieler (Team 2)
+            </p>
         </div>
     </div>
     <footer id="footer">

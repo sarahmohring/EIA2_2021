@@ -9,7 +9,22 @@ namespace Fussball {
     export let scoreTeam2: number = 0;
     let startButton: HTMLElement;
     let formData: FormData;
-    let imageData: ImageData;
+
+    let chosenCharacter: string;
+
+    let extraPlayer1: number = 11;
+    // let color1: string; // warum nicht global deklarierbar???
+    // let speedMax1: number;
+    // let speedMin1: number;
+    // let precisionMax1: number;
+    // let precisionMin1: number;
+
+    let extraPlayer2: number = 11;
+    // let color2: string;
+    // let speedMax2: number;
+    // let speedMin2: number;
+    // let precisionMax2: number;
+    // let precisionMin2: number;
 
     window.addEventListener("load", handleLoad);
 
@@ -87,9 +102,12 @@ namespace Fussball {
 
         createReferees();
 
-        canvas.addEventListener("click", shootBall);
 
-        canvas.addEventListener("click", clickedPerson); // shift + click
+        // event listeners for interaction with the players
+        canvas.addEventListener("click", shootBall); // ctrl+click
+        document.addEventListener("keyup", chooseCharacter); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
+        canvas.addEventListener("click", addNewPlayer); // a+click or y+click
+        canvas.addEventListener("click", clickedPerson); // shift+click (info) or alt+click (delete)
 
         // trackScore(); // wann aufrufen?? funktioniert im Prinzip
 
@@ -121,6 +139,42 @@ namespace Fussball {
         }
     }
 
+    function chooseCharacter(_event: KeyboardEvent): void { // Jirka - Blackmailer Companion
+        chosenCharacter = _event.key;
+    }
+
+    function addNewPlayer(_event: MouseEvent): void {
+
+        // doesn't work with global variables?
+        // save all form values in variables
+        formData = new FormData(document.forms[0]);
+
+        // team 1
+        let color1: string = <string>formData.get("ColorTeam1")?.toString();
+        let speedMax1: number = Number(<unknown>formData.get("SliderSpeed1Max"));
+        let speedMin1: number = Number(<unknown>formData.get("SliderSpeed1Min"));
+        let precisionMax1: number = Number(<unknown>formData.get("SliderPrecision1Max"));
+        let precisionMin1: number = Number(<unknown>formData.get("SliderPrecision1Min"));
+
+        // team 2
+        let color2: string = <string>formData.get("ColorTeam2")?.toString();
+        let speedMax2: number = Number(<unknown>formData.get("SliderSpeed2Max"));
+        let speedMin2: number = Number(<unknown>formData.get("SliderSpeed2Min"));
+        let precisionMax2: number = Number(<unknown>formData.get("SliderPrecision2Max"));
+        let precisionMin2: number = Number(<unknown>formData.get("SliderPrecision2Min"));
+
+
+        if (chosenCharacter == "a") { // a+click - new player for Team 1
+            extraPlayer1++;
+            people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
+        }
+
+        if (chosenCharacter == "y") { // y+click - new player for Team 2
+            extraPlayer2++;
+            people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
+        }
+    }
+
     function animate(): void {
 
         requestAnimationFrame(animate);
@@ -135,10 +189,12 @@ namespace Fussball {
 
         ball.draw();
         // ball.move(_event);
+
+        deleteExpendables();
     }
-    
+
     function shootBall(_event: MouseEvent): void {
-        if (_event.shiftKey == false) {
+        if (_event.ctrlKey) {
             // HALIS
             let rect: DOMRect = canvas.getBoundingClientRect();
             let x: number = _event.clientX - rect.left;
@@ -149,15 +205,23 @@ namespace Fussball {
         // ENDE HALIS
     }
 
-    // register shift+click on a player to display player info - Jirka - eiaSteroids
-    function clickedPerson(_event: MouseEvent): void { // PROBLEM: Player-Eigenschaften nicht über Person abrufbar
-        
-        if (_event.shiftKey) {
+    // interact with players via mouse and keyboard
+    function clickedPerson(_event: MouseEvent): void { // Jirka - eiaSteroids
+        // PROBLEM: Player-Eigenschaften nicht über Person abrufbar; Schiedsrichter können auch gelöscht werden
+
+        if (_event.shiftKey) { // shift+click - display player info
             let hotspot: Vector = new Vector(_event.clientX - crc2.canvas.offsetLeft, _event.clientY - crc2.canvas.offsetTop);
             let personClicked: Person | null = getClickedPerson(hotspot);
             console.log(personClicked);
             if (personClicked)
                 displayInfo(personClicked);
+        }
+
+        if (_event.altKey) { // alt+click - delete player
+            let hotspot: Vector = new Vector(_event.clientX - crc2.canvas.offsetLeft, _event.clientY - crc2.canvas.offsetTop);
+            let personClicked: Person | null = getClickedPerson(hotspot);
+            if (personClicked)
+                personClicked.expendable = true;
         }
     }
 
@@ -168,10 +232,9 @@ namespace Fussball {
         }
         return null;
     }
-     
+
 
     function displayInfo(_player: Person): void { // PROBLEM: kein Zugriff auf Objekteigenschaften
-        // bei click und shift - aktuell bei CLICK
 
         let infoTest: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
         infoTest.innerHTML = "<b>TEST:</b> " + _player.hitRadius;
@@ -185,11 +248,18 @@ namespace Fussball {
         // let infoNumber: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
         // infoNumber.innerHTML = "<b>Trikotnummer:</b> " + _player.shirtNumber;
 
-        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed");
+        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed"); // round number
         // infoSpeed.innerHTML = "<b>Geschwindigkeit:</b> " + _player.speed;
 
-        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
+        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber"); // round number
         // infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision;
+    }
+
+    function deleteExpendables(): void { // Jirka - eiaSteroids
+        for (let i: number = people.length - 1; i >= 0; i--) {
+            if (people[i].expendable)
+                people.splice(i, 1);
+        }
     }
 
     // function trackScore(): void {
@@ -199,6 +269,7 @@ namespace Fussball {
     //             scoreTeam1++;
     //             let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
     //             team1Score.innerHTML = scoreTeam1.toString();
+    //             // play cheering sound
     //         }
     //     }
     //     if (ball.position.x == 975) {
@@ -207,6 +278,7 @@ namespace Fussball {
     //             scoreTeam2++;
     //             let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
     //             team2Score.innerHTML = scoreTeam2.toString();
+    //             // play cheering sound
     //         }
     //     }
     // }

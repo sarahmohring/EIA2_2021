@@ -7,7 +7,19 @@ var Fussball;
     Fussball.scoreTeam2 = 0;
     let startButton;
     let formData;
-    let imageData;
+    let chosenCharacter;
+    let extraPlayer1 = 11;
+    // let color1: string; // warum nicht global deklarierbar???
+    // let speedMax1: number;
+    // let speedMin1: number;
+    // let precisionMax1: number;
+    // let precisionMin1: number;
+    let extraPlayer2 = 11;
+    // let color2: string;
+    // let speedMax2: number;
+    // let speedMin2: number;
+    // let precisionMax2: number;
+    // let precisionMin2: number;
     window.addEventListener("load", handleLoad);
     function handleLoad(_event) {
         // install event listener on start button
@@ -64,8 +76,11 @@ var Fussball;
         createTeam1(color1, speedMax1, speedMin1, precisionMax1, precisionMin1);
         createTeam2(color2, speedMax2, speedMin2, precisionMax2, precisionMin2);
         createReferees();
-        Fussball.canvas.addEventListener("click", shootBall);
-        Fussball.canvas.addEventListener("click", clickedPerson); // shift + click
+        // event listeners for interaction with the players
+        Fussball.canvas.addEventListener("click", shootBall); // ctrl+click
+        document.addEventListener("keyup", chooseCharacter); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
+        Fussball.canvas.addEventListener("click", addNewPlayer); // a+click or y+click
+        Fussball.canvas.addEventListener("click", clickedPerson); // shift+click (info) or alt+click (delete)
         // trackScore(); // wann aufrufen?? funktioniert im Prinzip
         animate();
     }
@@ -86,6 +101,34 @@ var Fussball;
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam1[i][0], positionsTeam1[i][1]), _color, i + 1, _speedMin, _speedMax, _precisionMin, _precisionMax));
         }
     }
+    function chooseCharacter(_event) {
+        chosenCharacter = _event.key;
+    }
+    function addNewPlayer(_event) {
+        // doesn't work with global variables?
+        // save all form values in variables
+        formData = new FormData(document.forms[0]);
+        // team 1
+        let color1 = formData.get("ColorTeam1")?.toString();
+        let speedMax1 = Number(formData.get("SliderSpeed1Max"));
+        let speedMin1 = Number(formData.get("SliderSpeed1Min"));
+        let precisionMax1 = Number(formData.get("SliderPrecision1Max"));
+        let precisionMin1 = Number(formData.get("SliderPrecision1Min"));
+        // team 2
+        let color2 = formData.get("ColorTeam2")?.toString();
+        let speedMax2 = Number(formData.get("SliderSpeed2Max"));
+        let speedMin2 = Number(formData.get("SliderSpeed2Min"));
+        let precisionMax2 = Number(formData.get("SliderPrecision2Max"));
+        let precisionMin2 = Number(formData.get("SliderPrecision2Min"));
+        if (chosenCharacter == "a") { // a+click - new player for Team 1
+            extraPlayer1++;
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
+        }
+        if (chosenCharacter == "y") { // y+click - new player for Team 2
+            extraPlayer2++;
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
+        }
+    }
     function animate() {
         requestAnimationFrame(animate);
         Fussball.crc2.clearRect(0, 0, Fussball.canvas.width, Fussball.canvas.height);
@@ -97,9 +140,10 @@ var Fussball;
         }
         Fussball.ball.draw();
         // ball.move(_event);
+        deleteExpendables();
     }
     function shootBall(_event) {
-        if (_event.shiftKey == false) {
+        if (_event.ctrlKey) {
             // HALIS
             let rect = Fussball.canvas.getBoundingClientRect();
             let x = _event.clientX - rect.left;
@@ -109,14 +153,21 @@ var Fussball;
         }
         // ENDE HALIS
     }
-    // register shift+click on a player to display player info - Jirka - eiaSteroids
+    // interact with players via mouse and keyboard
     function clickedPerson(_event) {
-        if (_event.shiftKey) {
+        // PROBLEM: Player-Eigenschaften nicht über Person abrufbar; Schiedsrichter können auch gelöscht werden
+        if (_event.shiftKey) { // shift+click - display player info
             let hotspot = new Fussball.Vector(_event.clientX - Fussball.crc2.canvas.offsetLeft, _event.clientY - Fussball.crc2.canvas.offsetTop);
             let personClicked = getClickedPerson(hotspot);
             console.log(personClicked);
             if (personClicked)
                 displayInfo(personClicked);
+        }
+        if (_event.altKey) { // alt+click - delete player
+            let hotspot = new Fussball.Vector(_event.clientX - Fussball.crc2.canvas.offsetLeft, _event.clientY - Fussball.crc2.canvas.offsetTop);
+            let personClicked = getClickedPerson(hotspot);
+            if (personClicked)
+                personClicked.expendable = true;
         }
     }
     function getClickedPerson(_hotspot) {
@@ -127,7 +178,6 @@ var Fussball;
         return null;
     }
     function displayInfo(_player) {
-        // bei click und shift - aktuell bei CLICK
         let infoTest = document.getElementById("infoNumber");
         infoTest.innerHTML = "<b>TEST:</b> " + _player.hitRadius;
         // let infoTeam: HTMLElement = <HTMLElement>document.getElementById("infoTeam");
@@ -136,10 +186,16 @@ var Fussball;
         // infoPosition.innerHTML = "<b>Position:</b> " + _player.gamePosition;
         // let infoNumber: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
         // infoNumber.innerHTML = "<b>Trikotnummer:</b> " + _player.shirtNumber;
-        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed");
+        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed"); // round number
         // infoSpeed.innerHTML = "<b>Geschwindigkeit:</b> " + _player.speed;
-        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
+        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber"); // round number
         // infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision;
+    }
+    function deleteExpendables() {
+        for (let i = Fussball.people.length - 1; i >= 0; i--) {
+            if (Fussball.people[i].expendable)
+                Fussball.people.splice(i, 1);
+        }
     }
     // function trackScore(): void {
     //     if (ball.position.x == 25) { // so score doesnt keep going up!? - will still happen if called from animation method
@@ -148,6 +204,7 @@ var Fussball;
     //             scoreTeam1++;
     //             let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
     //             team1Score.innerHTML = scoreTeam1.toString();
+    //             // play cheering sound
     //         }
     //     }
     //     if (ball.position.x == 975) {
@@ -156,6 +213,7 @@ var Fussball;
     //             scoreTeam2++;
     //             let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
     //             team2Score.innerHTML = scoreTeam2.toString();
+    //             // play cheering sound
     //         }
     //     }
     // }

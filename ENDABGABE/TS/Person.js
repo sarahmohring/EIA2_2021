@@ -3,6 +3,7 @@ var Fussball;
 (function (Fussball) {
     class Person {
         constructor(_position, _velocity) {
+            this.expendable = false;
             this.position = _position;
             if (_velocity)
                 this.velocity = _velocity;

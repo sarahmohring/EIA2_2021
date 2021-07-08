@@ -76,7 +76,7 @@ canvas {
     border: solid salmon;
     border-radius: 15px;
     display: none;
-    background: url(GRAFIKEN/field.png);
+    background: url(MEDIA/field.png);
     margin-top: -10px;
 }
 
@@ -106,10 +106,6 @@ canvas {
     flex-direction: row;
 }
 
-#shift {
-    margin-top: -20px;
-}
-
 #team1, #team2 {
     width: 30px;
     height: 30px;
@@ -123,26 +119,17 @@ canvas {
     height: 20px;
     border: solid black;
     border-radius: 50%;
-    margin: 0 auto;
+    margin-left: 20px;
+    margin-top: 13px;
 }
 
-#auswechseln {
+#teamDiv {
     display: flex;
     flex-direction: row;
-}
-
-span {
-    padding: 10px;
-    color: white;
-    background-color: salmon;
-    border-radius: 15px;
-    cursor: pointer;
-    width: 30%;
     margin: 0 auto;
-}
-
-span:hover {
-    background-color: rgba(250, 128, 114, 0.8);
+    width: 30%;
+    margin-top: -10px;
+    margin-bottom: -10px;
 }
 
 #footer {
