@@ -3,35 +3,29 @@ var Fussball;
 (function (Fussball) {
     class Ball {
         constructor() {
-            this.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
-            this.hitRadius = 7;
+            this.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2); // center of the field
+            this.newPosition = this.position;
         }
-        // constructor mit draw Aufruf?
-        // position als Startposition festhalten?? - _position.copy();
-        move(_event /*, _precision: number*/) {
-            // ball needs to go towards clicked position (but depending on distance of destination and precision of shooting player (as PARAMETERS?))
-            // if (this.position.x < 10 || this.position.x > 980)
-            //     this.draw();
-            // if (this.position.y < 10 || this.position.y > 640)
-            //     this.draw();
-            // ???
-            // let difference: Vector = new Vector(_event.offsetX - this.position.x, _event.offsetY - this.position.y);
-            // difference.scale(1 / 30); // controls ball speed
-            // this.position.add(difference);
-            // this.draw();
+        move() {
+            // for (let person of people) {
+            //     let difference: Vector = Vector.getDifference(ball.position, person.position);
+            //     if (difference.length < 20) { // if ball doesn't hit any players on the way
+            //         // ball needs to go towards clicked position (slowing down at the end)
+            let distance = Fussball.Vector.getDifference(this.newPosition, this.position);
+            distance.scale(1 / 100);
+            this.position.add(distance);
+            // }
+            this.draw();
+            // }
         }
-        // HALIS
         shot(_position) {
             if (Fussball.stop == true) {
-                //let x: number = _pos.screenX;
-                //let y: number = _pos.screenY;
-                //console.log(x, y);
-                //this.position.x = x;
-                //this.position.y = y;
-                this.position = _position.copy();
+                let distance = Fussball.Vector.getDifference(_position, this.position);
+                _position.add(new Fussball.Vector(Fussball.randomNumber((-distance.x) / 20, distance.x / 20), Fussball.randomNumber((-distance.x) / 20, distance.x / 20))); // longer shot = less precise aim
+                // precision of player
+                this.newPosition = _position.copy();
             }
         }
-        // ENDE HALIS
         draw() {
             Fussball.crc2.save();
             Fussball.crc2.translate(this.position.x, this.position.y);

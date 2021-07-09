@@ -10,6 +10,7 @@ body {
     flex-direction: row;
     width: 100%;
     margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 h1 {
@@ -43,7 +44,6 @@ fieldset {
     background-color: white;
     color: rgb(87, 42, 37);
     margin: 0 auto;
-    margin-bottom: 30px;
     width: 90%;
 }
 
@@ -104,6 +104,16 @@ canvas {
 #score {
     display: flex;
     flex-direction: row;
+}
+
+#currentPlayer {
+    height: 30px;
+    width: 30%;
+    border: solid black;
+    border-radius: 15px;
+    margin: 0 auto;
+    padding-top: 10px;
+    margin-bottom: 20px;
 }
 
 #team1, #team2 {

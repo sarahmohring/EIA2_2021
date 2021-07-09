@@ -1,45 +1,34 @@
 namespace Fussball {
 
-    export class Ball { // extends Moveable geht nicht wg Parameter in move
+    export class Ball { // extends Moveable ???
 
-        public position: Vector = new Vector(canvas.width / 2, canvas.height / 2);
-        public hitRadius: number = 7;
+        public position: Vector = new Vector(canvas.width / 2, canvas.height / 2); // center of the field
+        public newPosition: Vector = this.position;
 
-        // constructor mit draw Aufruf?
-        // position als Startposition festhalten?? - _position.copy();
+        public move(): void {
 
-        public move(_event: MouseEvent /*, _precision: number*/): void {
+            // for (let person of people) {
+            //     let difference: Vector = Vector.getDifference(ball.position, person.position);
+            //     if (difference.length < 20) { // if ball doesn't hit any players on the way
+            //         // ball needs to go towards clicked position (slowing down at the end)
+            let distance: Vector = Vector.getDifference(this.newPosition, this.position);
+            distance.scale(1 / 100);
+            this.position.add(distance);
 
-            // ball needs to go towards clicked position (but depending on distance of destination and precision of shooting player (as PARAMETERS?))
 
-
-            // if (this.position.x < 10 || this.position.x > 980)
-            //     this.draw();
-            // if (this.position.y < 10 || this.position.y > 640)
-            //     this.draw();
-
-            // ???
-            // let difference: Vector = new Vector(_event.offsetX - this.position.x, _event.offsetY - this.position.y);
-            // difference.scale(1 / 30); // controls ball speed
-            // this.position.add(difference);
-
-            // this.draw();
-            
-            
+            // }
+            this.draw();
+            // }
         }
 
-        // HALIS
-        public shot(_position: Vector): void {
+        public shot(_position: Vector): void { // ball destination depending on distance to click and precision of shooting player
             if (stop == true) {
-                //let x: number = _pos.screenX;
-                //let y: number = _pos.screenY;
-                //console.log(x, y);
-                //this.position.x = x;
-                //this.position.y = y;
-                this.position = _position.copy();
+                let distance: Vector = Vector.getDifference(_position, this.position);
+                _position.add(new Vector(randomNumber((-distance.x) / 20, distance.x / 20), randomNumber((-distance.x) / 20, distance.x / 20))); // longer shot = less precise aim
+                // precision of player
+                this.newPosition = _position.copy();
             }
         }
-        // ENDE HALIS
 
         public draw(): void {
 

@@ -7,19 +7,19 @@ var Fussball;
     Fussball.scoreTeam2 = 0;
     let startButton;
     let formData;
-    let chosenCharacter;
+    let pressedKey;
     let extraPlayer1 = 11;
-    // let color1: string; // warum nicht global deklarierbar???
-    // let speedMax1: number;
-    // let speedMin1: number;
-    // let precisionMax1: number;
-    // let precisionMin1: number;
+    let color1;
+    let speedMax1;
+    let speedMin1;
+    let precisionMax1;
+    let precisionMin1;
     let extraPlayer2 = 11;
-    // let color2: string;
-    // let speedMax2: number;
-    // let speedMin2: number;
-    // let precisionMax2: number;
-    // let precisionMin2: number;
+    let color2;
+    let speedMax2;
+    let speedMin2;
+    let precisionMax2;
+    let precisionMin2;
     window.addEventListener("load", handleLoad);
     function handleLoad(_event) {
         // install event listener on start button
@@ -55,33 +55,30 @@ var Fussball;
         // save all form values in variables
         formData = new FormData(document.forms[0]);
         // team 1
-        let color1 = formData.get("ColorTeam1")?.toString();
-        let speedMax1 = Number(formData.get("SliderSpeed1Max"));
-        let speedMin1 = Number(formData.get("SliderSpeed1Min"));
-        let precisionMax1 = Number(formData.get("SliderPrecision1Max"));
-        let precisionMin1 = Number(formData.get("SliderPrecision1Min"));
+        color1 = formData.get("ColorTeam1")?.toString();
+        speedMax1 = Number(formData.get("SliderSpeed1Max"));
+        speedMin1 = Number(formData.get("SliderSpeed1Min"));
+        precisionMax1 = Number(formData.get("SliderPrecision1Max"));
+        precisionMin1 = Number(formData.get("SliderPrecision1Min"));
         // team 2
-        let color2 = formData.get("ColorTeam2")?.toString();
-        let speedMax2 = Number(formData.get("SliderSpeed2Max"));
-        let speedMin2 = Number(formData.get("SliderSpeed2Min"));
-        let precisionMax2 = Number(formData.get("SliderPrecision2Max"));
-        let precisionMin2 = Number(formData.get("SliderPrecision2Min"));
+        color2 = formData.get("ColorTeam2")?.toString();
+        speedMax2 = Number(formData.get("SliderSpeed2Max"));
+        speedMin2 = Number(formData.get("SliderSpeed2Min"));
+        precisionMax2 = Number(formData.get("SliderPrecision2Max"));
+        precisionMin2 = Number(formData.get("SliderPrecision2Min"));
         // display team colors in info div
         let circleTeam1 = document.getElementById("team1");
         circleTeam1.style.backgroundColor = color1;
         let circleTeam2 = document.getElementById("team2");
         circleTeam2.style.backgroundColor = color2;
         Fussball.ball = new Fussball.Ball();
-        // create teams with form values
-        createTeam1(color1, speedMax1, speedMin1, precisionMax1, precisionMin1);
-        createTeam2(color2, speedMax2, speedMin2, precisionMax2, precisionMin2);
+        createTeams();
         createReferees();
         // event listeners for interaction with the players
         Fussball.canvas.addEventListener("click", shootBall); // ctrl+click
-        document.addEventListener("keyup", chooseCharacter); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
+        document.addEventListener("keyup", pressKey); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
         Fussball.canvas.addEventListener("click", addNewPlayer); // a+click or y+click
         Fussball.canvas.addEventListener("click", clickedPerson); // shift+click (info) or alt+click (delete)
-        // trackScore(); // wann aufrufen?? funktioniert im Prinzip
         animate();
     }
     function createReferees() {
@@ -89,42 +86,25 @@ var Fussball;
         Fussball.people.push(new Fussball.AssistantReferee(new Fussball.Vector(975, 25)));
         Fussball.people.push(new Fussball.Referee(new Fussball.Vector(500, 625)));
     }
-    function createTeam1(_color, _speedMax, _speedMin, _precisionMax, _precisionMin) {
+    function createTeams() {
         let positionsTeam1 = [[25, 325], [200, 100], [200, 550], [400, 50], [400, 600], [350, 325], [550, 125], [550, 525], [850, 175], [850, 475], [725, 325]];
         for (let i = 0; i <= 10; i++) {
-            Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam1[i][0], positionsTeam1[i][1]), _color, i + 1, _speedMin, _speedMax, _precisionMin, _precisionMax));
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam1[i][0], positionsTeam1[i][1]), color1, i + 1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
-    }
-    function createTeam2(_color, _speedMax, _speedMin, _precisionMax, _precisionMin) {
-        let positionsTeam1 = [[975, 325], [800, 550], [800, 100], [600, 600], [600, 50], [650, 325], [450, 525], [450, 125], [150, 475], [150, 175], [275, 325]];
+        let positionsTeam2 = [[975, 325], [800, 550], [800, 100], [600, 600], [600, 50], [650, 325], [450, 525], [450, 125], [150, 475], [150, 175], [275, 325]];
         for (let i = 0; i <= 10; i++) {
-            Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam1[i][0], positionsTeam1[i][1]), _color, i + 1, _speedMin, _speedMax, _precisionMin, _precisionMax));
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam2[i][0], positionsTeam2[i][1]), color2, i + 1, speedMin2, speedMax2, precisionMin2, precisionMax2));
         }
     }
-    function chooseCharacter(_event) {
-        chosenCharacter = _event.key;
+    function pressKey(_event) {
+        pressedKey = _event.key;
     }
     function addNewPlayer(_event) {
-        // doesn't work with global variables?
-        // save all form values in variables
-        formData = new FormData(document.forms[0]);
-        // team 1
-        let color1 = formData.get("ColorTeam1")?.toString();
-        let speedMax1 = Number(formData.get("SliderSpeed1Max"));
-        let speedMin1 = Number(formData.get("SliderSpeed1Min"));
-        let precisionMax1 = Number(formData.get("SliderPrecision1Max"));
-        let precisionMin1 = Number(formData.get("SliderPrecision1Min"));
-        // team 2
-        let color2 = formData.get("ColorTeam2")?.toString();
-        let speedMax2 = Number(formData.get("SliderSpeed2Max"));
-        let speedMin2 = Number(formData.get("SliderSpeed2Min"));
-        let precisionMax2 = Number(formData.get("SliderPrecision2Max"));
-        let precisionMin2 = Number(formData.get("SliderPrecision2Min"));
-        if (chosenCharacter == "a") { // a+click - new player for Team 1
+        if (pressedKey == "a" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) { // a+click - new player for Team 1
             extraPlayer1++;
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
-        if (chosenCharacter == "y") { // y+click - new player for Team 2
+        if (pressedKey == "y" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) { // y+click - new player for Team 2
             extraPlayer2++;
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
         }
@@ -132,26 +112,72 @@ var Fussball;
     function animate() {
         requestAnimationFrame(animate);
         Fussball.crc2.clearRect(0, 0, Fussball.canvas.width, Fussball.canvas.height);
+        if (Fussball.ball.position.x >= 0 && Fussball.ball.position.x <= 1000 && Fussball.ball.position.y >= 0 && Fussball.ball.position.y <= 650) {
+            if (Fussball.stop == false) {
+                Fussball.ball.move();
+            }
+            else
+                Fussball.ball.draw();
+        }
+        else { // if ball leaves the pitch - reset to center;
+            Fussball.ball.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+            Fussball.ball.newPosition = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+        }
         for (let allPeople of Fussball.people) {
-            if (Fussball.stop == false) // hier if (players.hitBall == false)
+            if (Fussball.stop == false) // when no player is at the ball position
                 allPeople.move();
             else
-                allPeople.draw();
+                allPeople.draw(); // "freeze frame"
         }
-        Fussball.ball.draw();
-        // ball.move(_event);
         deleteExpendables();
+        trackScore();
+    }
+    function deleteExpendables() {
+        for (let i = Fussball.people.length - 1; i >= 0; i--) {
+            if (Fussball.people[i].expendable && Fussball.people[i] instanceof Fussball.Player) // can't delete referees
+                Fussball.people.splice(i, 1);
+        }
+    }
+    function trackScore() {
+        if (Fussball.ball.position.x <= 25.1 && Fussball.ball.position.x >= 25) { // doesn't work perfectly yet!
+            if (Fussball.ball.position.y >= 250 && Fussball.ball.position.y <= 400) {
+                Fussball.scoreTeam1++;
+                let team1Score = document.getElementById("scoreTeam1");
+                team1Score.innerHTML = Fussball.scoreTeam1.toString();
+                // play cheering sound
+                let audio = document.getElementById("cheer");
+                audio.play();
+                setTimeout(afterGoal, 3000);
+            }
+        }
+        if (Fussball.ball.position.x <= 975.1 && Fussball.ball.position.x >= 975) {
+            if (Fussball.ball.position.y >= 250 && Fussball.ball.position.y <= 400) {
+                Fussball.scoreTeam2++;
+                let team2Score = document.getElementById("scoreTeam2");
+                team2Score.innerHTML = Fussball.scoreTeam2.toString();
+                // play cheering sound
+                let audio = document.getElementById("cheer");
+                audio.play();
+                setTimeout(afterGoal, 3000);
+            }
+        }
+        function afterGoal() {
+            Fussball.ball.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+            Fussball.ball.newPosition = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+            for (let allPeople of Fussball.people) {
+                allPeople.position = allPeople.startPosition;
+            }
+        }
     }
     function shootBall(_event) {
         if (_event.ctrlKey) {
-            // HALIS
-            let rect = Fussball.canvas.getBoundingClientRect();
-            let x = _event.clientX - rect.left;
-            let y = _event.clientY - rect.top;
-            Fussball.ball.shot(new Fussball.Vector(x, y));
+            Fussball.ball.shot(new Fussball.Vector(_event.offsetX, _event.offsetY));
             Fussball.stop = false;
+            // while ball is rolling and no player has reached it yet
+            let currentTeam = document.getElementById("currentPlayer");
+            currentTeam.style.backgroundColor = "white";
+            currentTeam.innerHTML = "kein Spieler";
         }
-        // ENDE HALIS
     }
     // interact with players via mouse and keyboard
     function clickedPerson(_event) {
@@ -179,7 +205,7 @@ var Fussball;
     }
     function displayInfo(_player) {
         let infoTest = document.getElementById("infoNumber");
-        infoTest.innerHTML = "<b>TEST:</b> " + _player.hitRadius;
+        infoTest.innerHTML = "<b>TEST:</b> " + _player.startPosition.x;
         // let infoTeam: HTMLElement = <HTMLElement>document.getElementById("infoTeam");
         // infoTeam.style.backgroundColor = _player.color;
         // let infoPosition: HTMLElement = <HTMLElement>document.getElementById("infoPosition");
@@ -191,32 +217,6 @@ var Fussball;
         // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber"); // round number
         // infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision;
     }
-    function deleteExpendables() {
-        for (let i = Fussball.people.length - 1; i >= 0; i--) {
-            if (Fussball.people[i].expendable)
-                Fussball.people.splice(i, 1);
-        }
-    }
-    // function trackScore(): void {
-    //     if (ball.position.x == 25) { // so score doesnt keep going up!? - will still happen if called from animation method
-    //         if (ball.position.y >= 250 && ball.position.y <= 400) {
-    //             // console.log("scoreTeam2");
-    //             scoreTeam1++;
-    //             let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
-    //             team1Score.innerHTML = scoreTeam1.toString();
-    //             // play cheering sound
-    //         }
-    //     }
-    //     if (ball.position.x == 975) {
-    //         if (ball.position.y >= 250 && ball.position.y <= 400) {
-    //             // console.log("scoreTeam2");
-    //             scoreTeam2++;
-    //             let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
-    //             team2Score.innerHTML = scoreTeam2.toString();
-    //             // play cheering sound
-    //         }
-    //     }
-    // }
     // random number between a minimum and a maximum input
     function randomNumber(_min, _max) {
         return Math.random() * (_max - _min) + _min;

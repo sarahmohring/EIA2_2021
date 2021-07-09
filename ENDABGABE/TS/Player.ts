@@ -7,7 +7,6 @@ namespace Fussball {
         public shirtNumber: number;
         public speed: number;
         public precision: number;
-        public hitRadius: number = 12.5;
 
         constructor(_position: Vector, _color: string, _shirtNumber: number, _speedMin: number, _speedMax: number, _precisionMin: number, _precisionMax: number) {
             super(_position);
@@ -27,7 +26,7 @@ namespace Fussball {
             if (distance.length < 300) { // only start moving if ball is within 300px (=30m) radius
 
                 // players move towards ball
-                if (distance.length > 20) { // 20 = radius player + ball
+                if (distance.length > 20) { // 17 = radius player + ball
 
                     this.position.x += distance.x * 0.01 * this.speed;
                     this.position.y += distance.y * 0.01 * this.speed;
@@ -36,6 +35,11 @@ namespace Fussball {
                 // first player reaches ball
                 else {
                     stop = true;
+
+                    // show which team can shoot
+                    let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
+                    currentTeam.style.backgroundColor = this.color;
+                    currentTeam.innerHTML = "";
                 }
             }
 
@@ -61,7 +65,7 @@ namespace Fussball {
 
             // body
             crc2.beginPath();
-            crc2.arc(0, 0, 12.5, 0, 2 * Math.PI);
+            crc2.arc(0, 0, 10, 0, 2 * Math.PI);
             crc2.stroke();
             crc2.fill();
 

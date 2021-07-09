@@ -6,7 +6,7 @@ namespace Fussball {
 
         public move(): void { 
             
-            // assistant referees can move along the outer lines
+            // assistant referees can move horizontally along the outer lines
             if (this.position.x < 25 || this.position.x > 975)
                 this.velocity.x = -this.velocity.x;
 

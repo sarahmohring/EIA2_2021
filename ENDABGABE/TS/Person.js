@@ -2,13 +2,12 @@
 var Fussball;
 (function (Fussball) {
     class Person {
-        constructor(_position, _velocity) {
+        constructor(_position) {
             this.expendable = false;
             this.position = _position;
-            if (_velocity)
-                this.velocity = _velocity;
+            this.startPosition = _position.copy();
         }
-        // register if player has been clicked
+        // register if person has been clicked
         isClicked(_hotspot) {
             let hitsize = 12.5;
             let difference = new Fussball.Vector(_hotspot.x - this.position.x, _hotspot.y - this.position.y);
