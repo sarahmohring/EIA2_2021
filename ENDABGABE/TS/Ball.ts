@@ -4,28 +4,23 @@ namespace Fussball {
 
         public position: Vector = new Vector(canvas.width / 2, canvas.height / 2); // center of the field
         public newPosition: Vector = this.position;
+        public shooterPrecision: number;
 
         public move(): void {
 
-            // for (let person of people) {
-            //     let difference: Vector = Vector.getDifference(ball.position, person.position);
-            //     if (difference.length < 20) { // if ball doesn't hit any players on the way
-            //         // ball needs to go towards clicked position (slowing down at the end)
+            // ball needs to go towards clicked position (slowing down at the end)
             let distance: Vector = Vector.getDifference(this.newPosition, this.position);
             distance.scale(1 / 100);
             this.position.add(distance);
 
-
-            // }
             this.draw();
-            // }
         }
 
         public shot(_position: Vector): void { // ball destination depending on distance to click and precision of shooting player
             if (stop == true) {
                 let distance: Vector = Vector.getDifference(_position, this.position);
-                _position.add(new Vector(randomNumber((-distance.x) / 20, distance.x / 20), randomNumber((-distance.x) / 20, distance.x / 20))); // longer shot = less precise aim
-                // precision of player
+                // destination further away and precision lower: ball is more likely to go to a wrong position
+                _position.add(new Vector(randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision)), randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision))));
                 this.newPosition = _position.copy();
             }
         }

@@ -27,6 +27,7 @@ var Fussball;
         startButton.addEventListener("click", handleStart);
     }
     function handleStart(_event) {
+        setInterval(endGame, 300000); // game duration: 5min
         // hide intro text, form, instructions, and start button by pressing start
         let flexDiv = document.querySelector("#flexContainer");
         let flexCanvas = document.querySelector("#flexCanvas");
@@ -77,8 +78,7 @@ var Fussball;
         // event listeners for interaction with the players
         Fussball.canvas.addEventListener("click", shootBall); // ctrl+click
         document.addEventListener("keyup", pressKey); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
-        Fussball.canvas.addEventListener("click", addNewPlayer); // a+click or y+click
-        Fussball.canvas.addEventListener("click", clickedPerson); // shift+click (info) or alt+click (delete)
+        Fussball.canvas.addEventListener("click", interact); // shift+click (info), alt+click (delete), a+click or y+click (new Player)
         animate();
     }
     function createReferees() {
@@ -87,86 +87,13 @@ var Fussball;
         Fussball.people.push(new Fussball.Referee(new Fussball.Vector(500, 625)));
     }
     function createTeams() {
-        let positionsTeam1 = [[25, 325], [200, 100], [200, 550], [400, 50], [400, 600], [350, 325], [550, 125], [550, 525], [850, 175], [850, 475], [725, 325]];
+        let positionsTeam1 = [[25, 325], [200, 100], [200, 550], [400, 50], [400, 600], [350, 325], [550, 125], [550, 525], [850, 175], [850, 475], [775, 325]];
         for (let i = 0; i <= 10; i++) {
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam1[i][0], positionsTeam1[i][1]), color1, i + 1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
-        let positionsTeam2 = [[975, 325], [800, 550], [800, 100], [600, 600], [600, 50], [650, 325], [450, 525], [450, 125], [150, 475], [150, 175], [275, 325]];
+        let positionsTeam2 = [[975, 325], [800, 550], [800, 100], [600, 600], [600, 50], [650, 325], [450, 525], [450, 125], [150, 475], [150, 175], [225, 325]];
         for (let i = 0; i <= 10; i++) {
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(positionsTeam2[i][0], positionsTeam2[i][1]), color2, i + 1, speedMin2, speedMax2, precisionMin2, precisionMax2));
-        }
-    }
-    function pressKey(_event) {
-        pressedKey = _event.key;
-    }
-    function addNewPlayer(_event) {
-        if (pressedKey == "a" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) { // a+click - new player for Team 1
-            extraPlayer1++;
-            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
-        }
-        if (pressedKey == "y" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) { // y+click - new player for Team 2
-            extraPlayer2++;
-            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
-        }
-    }
-    function animate() {
-        requestAnimationFrame(animate);
-        Fussball.crc2.clearRect(0, 0, Fussball.canvas.width, Fussball.canvas.height);
-        if (Fussball.ball.position.x >= 0 && Fussball.ball.position.x <= 1000 && Fussball.ball.position.y >= 0 && Fussball.ball.position.y <= 650) {
-            if (Fussball.stop == false) {
-                Fussball.ball.move();
-            }
-            else
-                Fussball.ball.draw();
-        }
-        else { // if ball leaves the pitch - reset to center;
-            Fussball.ball.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
-            Fussball.ball.newPosition = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
-        }
-        for (let allPeople of Fussball.people) {
-            if (Fussball.stop == false) // when no player is at the ball position
-                allPeople.move();
-            else
-                allPeople.draw(); // "freeze frame"
-        }
-        deleteExpendables();
-        trackScore();
-    }
-    function deleteExpendables() {
-        for (let i = Fussball.people.length - 1; i >= 0; i--) {
-            if (Fussball.people[i].expendable && Fussball.people[i] instanceof Fussball.Player) // can't delete referees
-                Fussball.people.splice(i, 1);
-        }
-    }
-    function trackScore() {
-        if (Fussball.ball.position.x <= 25.1 && Fussball.ball.position.x >= 25) { // doesn't work perfectly yet!
-            if (Fussball.ball.position.y >= 250 && Fussball.ball.position.y <= 400) {
-                Fussball.scoreTeam1++;
-                let team1Score = document.getElementById("scoreTeam1");
-                team1Score.innerHTML = Fussball.scoreTeam1.toString();
-                // play cheering sound
-                let audio = document.getElementById("cheer");
-                audio.play();
-                setTimeout(afterGoal, 3000);
-            }
-        }
-        if (Fussball.ball.position.x <= 975.1 && Fussball.ball.position.x >= 975) {
-            if (Fussball.ball.position.y >= 250 && Fussball.ball.position.y <= 400) {
-                Fussball.scoreTeam2++;
-                let team2Score = document.getElementById("scoreTeam2");
-                team2Score.innerHTML = Fussball.scoreTeam2.toString();
-                // play cheering sound
-                let audio = document.getElementById("cheer");
-                audio.play();
-                setTimeout(afterGoal, 3000);
-            }
-        }
-        function afterGoal() {
-            Fussball.ball.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
-            Fussball.ball.newPosition = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
-            for (let allPeople of Fussball.people) {
-                allPeople.position = allPeople.startPosition;
-            }
         }
     }
     function shootBall(_event) {
@@ -179,43 +106,137 @@ var Fussball;
             currentTeam.innerHTML = "kein Spieler";
         }
     }
+    function animate() {
+        requestAnimationFrame(animate);
+        Fussball.crc2.clearRect(0, 0, Fussball.canvas.width, Fussball.canvas.height);
+        // while ball is on the pitch
+        if (Fussball.ball.position.x >= 0 && Fussball.ball.position.x <= 1000 && Fussball.ball.position.y >= 0 && Fussball.ball.position.y <= 650) {
+            if (Fussball.stop == false) {
+                Fussball.ball.move();
+            }
+            else
+                Fussball.ball.draw();
+        }
+        else { // if ball leaves the pitch - reset to center;
+            let info = document.getElementById("goalOrOut");
+            info.innerHTML = "<b>AUS!</b>";
+            setTimeout(resetPitch, 2000); // !! resetPitch wird mehrfach aufgerufen??
+        }
+        for (let allPeople of Fussball.people) {
+            if (Fussball.stop == false) // when no player is at the ball position
+                allPeople.move();
+            else
+                allPeople.draw(); // "freeze frame"
+        }
+        deleteExpendables();
+        trackScore();
+    }
+    function deleteExpendables() {
+        for (let i = Fussball.people.length - 1; i >= 0; i--) {
+            if (Fussball.people[i] instanceof Fussball.Player && Fussball.people[i].expendable) // !! why not Player.expandable möglich
+                Fussball.people.splice(i, 1);
+        }
+    }
+    function trackScore() {
+        if (Fussball.ball.position.x <= 975.1 && Fussball.ball.position.x >= 975) { // !! doesn't work perfectly yet!
+            if (Fussball.ball.position.y >= 240 && Fussball.ball.position.y <= 410) {
+                // update score
+                Fussball.scoreTeam1++;
+                let team1Score = document.getElementById("scoreTeam1");
+                team1Score.innerHTML = Fussball.scoreTeam1.toString();
+                let info = document.getElementById("goalOrOut");
+                info.innerHTML = "<b>TOR!</b>";
+                // play cheering sound
+                let audio = document.getElementById("cheer");
+                audio.play();
+                // reset pitch
+                setTimeout(resetPitch, 3000);
+            }
+        }
+        if (Fussball.ball.position.x <= 25.1 && Fussball.ball.position.x >= 25) {
+            if (Fussball.ball.position.y >= 240 && Fussball.ball.position.y <= 410) {
+                // update score
+                Fussball.scoreTeam2++;
+                let team2Score = document.getElementById("scoreTeam2");
+                team2Score.innerHTML = Fussball.scoreTeam2.toString();
+                let info = document.getElementById("goalOrOut");
+                info.innerHTML = "<b>TOR!</b>";
+                // play cheering sound
+                let audio = document.getElementById("cheer");
+                audio.play();
+                // reset pitch
+                setTimeout(resetPitch, 3000); // wenn er dann auch noch ins aus geht dann hakt es
+            }
+        }
+    }
+    function resetPitch() {
+        // reset "goalOrOut" display
+        let info = document.getElementById("goalOrOut");
+        info.innerHTML = "<br>";
+        // reset "momentan am Ball" display
+        let currentTeam = document.getElementById("currentPlayer");
+        currentTeam.style.backgroundColor = "white";
+        currentTeam.innerHTML = "kein Spieler";
+        Fussball.stop = false; // so game doesn't have to be manually restarted
+        // people go to their starting positions
+        for (let allPeople of Fussball.people) {
+            allPeople.position = allPeople.startPosition.copy();
+        }
+        // ball goes back to the center of the pitch
+        Fussball.ball.position = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+        Fussball.ball.newPosition = new Fussball.Vector(Fussball.canvas.width / 2, Fussball.canvas.height / 2);
+    }
+    function pressKey(_event) {
+        pressedKey = _event.key;
+    }
     // interact with players via mouse and keyboard
-    function clickedPerson(_event) {
-        // PROBLEM: Player-Eigenschaften nicht über Person abrufbar; Schiedsrichter können auch gelöscht werden
-        if (_event.shiftKey) { // shift+click - display player info
-            let hotspot = new Fussball.Vector(_event.clientX - Fussball.crc2.canvas.offsetLeft, _event.clientY - Fussball.crc2.canvas.offsetTop);
+    function interact(_event) {
+        // shift+click - display player info
+        if (_event.shiftKey) {
+            let hotspot = new Fussball.Vector(_event.offsetX, _event.offsetY);
             let personClicked = getClickedPerson(hotspot);
-            console.log(personClicked);
             if (personClicked)
                 displayInfo(personClicked);
         }
-        if (_event.altKey) { // alt+click - delete player
-            let hotspot = new Fussball.Vector(_event.clientX - Fussball.crc2.canvas.offsetLeft, _event.clientY - Fussball.crc2.canvas.offsetTop);
+        // alt+click - delete player
+        if (_event.altKey) {
+            let hotspot = new Fussball.Vector(_event.offsetX, _event.offsetY);
             let personClicked = getClickedPerson(hotspot);
             if (personClicked)
                 personClicked.expendable = true;
         }
+        // a+click - new player for Team 1
+        if (pressedKey == "a" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) {
+            extraPlayer1++;
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
+        }
+        // y+click - new player for Team 2
+        if (pressedKey == "y" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) {
+            extraPlayer2++;
+            Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
+        }
     }
     function getClickedPerson(_hotspot) {
         for (let person of Fussball.people) {
-            if (person.isClicked(_hotspot))
+            if (person instanceof Fussball.Player && person.isClicked(_hotspot)) // don't select referees
                 return person;
         }
         return null;
     }
     function displayInfo(_player) {
-        let infoTest = document.getElementById("infoNumber");
-        infoTest.innerHTML = "<b>TEST:</b> " + _player.startPosition.x;
-        // let infoTeam: HTMLElement = <HTMLElement>document.getElementById("infoTeam");
-        // infoTeam.style.backgroundColor = _player.color;
-        // let infoPosition: HTMLElement = <HTMLElement>document.getElementById("infoPosition");
-        // infoPosition.innerHTML = "<b>Position:</b> " + _player.gamePosition;
-        // let infoNumber: HTMLElement = <HTMLElement>document.getElementById("infoNumber");
-        // infoNumber.innerHTML = "<b>Trikotnummer:</b> " + _player.shirtNumber;
-        // let infoSpeed: HTMLElement = <HTMLElement>document.getElementById("infoSpeed"); // round number
-        // infoSpeed.innerHTML = "<b>Geschwindigkeit:</b> " + _player.speed;
-        // let infoPrecision: HTMLElement = <HTMLElement>document.getElementById("infoNumber"); // round number
-        // infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision;
+        let infoTeam = document.getElementById("infoTeam");
+        infoTeam.style.backgroundColor = _player.color;
+        let infoNumber = document.getElementById("infoNumber");
+        infoNumber.innerHTML = "<b>Trikotnummer:</b> " + _player.shirtNumber;
+        let infoSpeed = document.getElementById("infoSpeed");
+        infoSpeed.innerHTML = "<b>Geschwindigkeit:</b> " + _player.speed.toFixed(3); // round number
+        let infoPrecision = document.getElementById("infoPrecision");
+        infoPrecision.innerHTML = "<b>Präzision:</b> " + _player.precision.toFixed(3); // round number
+    }
+    function endGame() {
+        Fussball.stop = true;
+        window.alert("Spiel vorbei! Der finale Spielstand ist " + Fussball.scoreTeam1 + ":" + Fussball.scoreTeam2);
+        location.reload();
     }
     // random number between a minimum and a maximum input
     function randomNumber(_min, _max) {

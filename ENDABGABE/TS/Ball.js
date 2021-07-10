@@ -7,22 +7,17 @@ var Fussball;
             this.newPosition = this.position;
         }
         move() {
-            // for (let person of people) {
-            //     let difference: Vector = Vector.getDifference(ball.position, person.position);
-            //     if (difference.length < 20) { // if ball doesn't hit any players on the way
-            //         // ball needs to go towards clicked position (slowing down at the end)
+            // ball needs to go towards clicked position (slowing down at the end)
             let distance = Fussball.Vector.getDifference(this.newPosition, this.position);
             distance.scale(1 / 100);
             this.position.add(distance);
-            // }
             this.draw();
-            // }
         }
         shot(_position) {
             if (Fussball.stop == true) {
                 let distance = Fussball.Vector.getDifference(_position, this.position);
-                _position.add(new Fussball.Vector(Fussball.randomNumber((-distance.x) / 20, distance.x / 20), Fussball.randomNumber((-distance.x) / 20, distance.x / 20))); // longer shot = less precise aim
-                // precision of player
+                // destination further away and precision lower: ball is more likely to go to a wrong position
+                _position.add(new Fussball.Vector(Fussball.randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision)), Fussball.randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision))));
                 this.newPosition = _position.copy();
             }
         }

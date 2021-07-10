@@ -1,5 +1,5 @@
 namespace Fussball {
-   
+
     export class Vector { // Jirka - eiasteroids Code
         public x: number;
         public y: number;
@@ -12,9 +12,9 @@ namespace Fussball {
             return new Vector(_v0.x - _v1.x, _v0.y - _v1.y);
         }
 
-        public get length(): number { // als Eigenschaft im Class Diagram
+        public get length(): number {
             return Math.hypot(this.x, this.y);
-          }
+        }
 
         public set(_x: number, _y: number): void {
             this.x = _x;
@@ -33,14 +33,6 @@ namespace Fussball {
 
         public copy(): Vector {
             return new Vector(this.x, this.y);
-        }
-
-        public random(_minLength: number, _maxLength: number): void {
-            let length: number = _minLength + Math.random() * (_maxLength - _minLength);
-            let direction: number = Math.random() * 2 * Math.PI;
-
-            this.set(Math.cos(direction), Math.sin(direction));
-            this.scale(length);
         }
     }
 }
