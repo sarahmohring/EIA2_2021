@@ -7,11 +7,10 @@ namespace Fussball {
     export let stop: boolean = false;
     export let scoreTeam1: number = 0;
     export let scoreTeam2: number = 0;
+    export let out: boolean = false;
 
     let startButton: HTMLElement;
     let formData: FormData;
-
-    let pressedKey: string;
 
     let extraPlayer1: number = 11;
     let color1: string;
@@ -19,13 +18,14 @@ namespace Fussball {
     let speedMin1: number;
     let precisionMax1: number;
     let precisionMin1: number;
-
     let extraPlayer2: number = 11;
     let color2: string;
     let speedMax2: number;
     let speedMin2: number;
     let precisionMax2: number;
     let precisionMin2: number;
+    let duration: number;
+    export let radius: number;
 
     window.addEventListener("load", handleLoad);
 
@@ -37,8 +37,6 @@ namespace Fussball {
     }
 
     function handleStart(_event: MouseEvent): void {
-
-        setInterval(endGame, 300000); // game duration: 5min
 
         // hide intro text, form, instructions, and start button by pressing start
         let flexDiv: HTMLDivElement = <HTMLDivElement>document.querySelector("#flexContainer");
@@ -57,7 +55,7 @@ namespace Fussball {
         document.body.style.backgroundColor = "white";
         document.body.style.color = "black";
 
-        // display canvas and game info div
+        // display canvas and game info div instead
         canvas = <HTMLCanvasElement>document.querySelector("canvas");
         crc2 = <CanvasRenderingContext2D>canvas.getContext("2d");
 
@@ -76,6 +74,13 @@ namespace Fussball {
 
         // save all form values in variables
         formData = new FormData(document.forms[0]);
+
+        // game duration
+        duration = Number(<unknown>formData.get("StepperDuration"));
+        setInterval(endGame, duration * 60 * 1000);
+
+        // attention radius around players
+        radius = Number(<unknown>formData.get("SliderRadius"));
 
         // team 1
         color1 = <string>formData.get("ColorTeam1")?.toString();
@@ -103,10 +108,9 @@ namespace Fussball {
 
         createReferees();
 
-        // event listeners for interaction with the players
-        canvas.addEventListener("click", shootBall); // ctrl+click
-        document.addEventListener("keyup", pressKey); // Problem: funktioniert nach dem 2. Klick / zeitverzögert? // wenn gedrückt - Maus funktioniert nicht mehr
-        canvas.addEventListener("click", interact); // shift+click (info), alt+click (delete), a+click or y+click (new Player)
+        // interaction with the players: 
+        // ctrl+click (shoot), shift+click (info), alt+click (delete), ctrl+shift+click / ctrl+alt+click (new Player)
+        canvas.addEventListener("click", interact);
 
         animate();
     }
@@ -133,35 +137,29 @@ namespace Fussball {
         }
     }
 
-    function shootBall(_event: MouseEvent): void {
-
-        if (_event.ctrlKey) {
-            ball.shot(new Vector(_event.offsetX, _event.offsetY));
-            stop = false;
-            // while ball is rolling and no player has reached it yet
-            let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
-            currentTeam.style.backgroundColor = "white";
-            currentTeam.innerHTML = "kein Spieler";
-        }
-    }
-
     function animate(): void {
 
         requestAnimationFrame(animate);
         crc2.clearRect(0, 0, canvas.width, canvas.height);
 
-        // while ball is on the pitch
-        if (ball.position.x >= 0 && ball.position.x <= 1000 && ball.position.y >= 0 && ball.position.y <= 650) {
-            if (stop == false) {  
+        // while ball is within the lines
+        if (ball.position.x >= 25 && ball.position.x <= 975 && ball.position.y >= 25 && ball.position.y <= 625) {
+            if (stop == false) {
                 ball.move();
             }
             else
                 ball.draw();
         }
-        else { // if ball leaves the pitch - reset to center;
+        else { // if ball goes out - reset to center;
+            out = true;
+            ball.move();
+
             let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
-            info.innerHTML = "<b>AUS!</b>";
-            setTimeout(resetPitch, 2000); // !! resetPitch wird mehrfach aufgerufen??
+            if (info.innerHTML != "<b>TOR!</b>") { // so "TOR!" doesn't get overwritten
+                info.innerHTML = "<b>AUS!</b>";
+            }
+
+            setTimeout(resetPitch, 2000); // Zittern wegen Animationsmethode ?!
         }
 
         for (let allPeople of people) {
@@ -172,53 +170,28 @@ namespace Fussball {
         }
 
         deleteExpendables();
-
-        trackScore();
     }
 
     function deleteExpendables(): void { // Jirka - eiaSteroids
         for (let i: number = people.length - 1; i >= 0; i--) {
-            if (people[i] instanceof Player && people[i].expendable) // !! why not Player.expandable möglich
+            if (people[i] instanceof Player && people[i].expendable) // "expendable" should be a Player attribute but causes errors
                 people.splice(i, 1);
         }
     }
 
-    function trackScore(): void {
-        if (ball.position.x <= 975.1 && ball.position.x >= 975) { // !! doesn't work perfectly yet!
-            if (ball.position.y >= 240 && ball.position.y <= 410) {
-                // update score
-                scoreTeam1++;
-                let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
-                team1Score.innerHTML = scoreTeam1.toString();
-                let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
-                info.innerHTML = "<b>TOR!</b>";
-                // play cheering sound
-                let audio: HTMLAudioElement = <HTMLAudioElement>document.getElementById("cheer");
-                audio.play();
-                // reset pitch
-                setTimeout(resetPitch, 3000);
-            }
-        }
-
-        if (ball.position.x <= 25.1 && ball.position.x >= 25) {
-            if (ball.position.y >= 240 && ball.position.y <= 410) {
-                // update score
-                scoreTeam2++;
-                let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam2");
-                team2Score.innerHTML = scoreTeam2.toString();
-                let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
-                info.innerHTML = "<b>TOR!</b>";
-                // play cheering sound
-                let audio: HTMLAudioElement = <HTMLAudioElement>document.getElementById("cheer");
-                audio.play();
-                // reset pitch
-                setTimeout(resetPitch, 3000); // wenn er dann auch noch ins aus geht dann hakt es
-            }
-        }
-    }
-
     function resetPitch(): void {
-        
+
+        stop = false; // so game doesn't have to be manually restarted
+        out = false;
+
+        // ball goes back to the center of the pitch
+        ball = new Ball();
+
+        // people go to their starting positions
+        for (let allPeople of people) {
+            allPeople.position = allPeople.startPosition.copy();
+        }
+
         // reset "goalOrOut" display
         let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
         info.innerHTML = "<br>";
@@ -227,50 +200,44 @@ namespace Fussball {
         let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
         currentTeam.style.backgroundColor = "white";
         currentTeam.innerHTML = "kein Spieler";
-        
-        stop = false; // so game doesn't have to be manually restarted
-        
-        // people go to their starting positions
-        for (let allPeople of people) {
-            allPeople.position = allPeople.startPosition.copy();
-        }
-
-        // ball goes back to the center of the pitch
-        ball.position = new Vector(canvas.width / 2, canvas.height / 2);
-        ball.newPosition = new Vector(canvas.width / 2, canvas.height / 2);
-    }
-
-    function pressKey(_event: KeyboardEvent): void {
-        pressedKey = _event.key;
     }
 
     // interact with players via mouse and keyboard
-    function interact(_event: MouseEvent): void { // partly based on eiaSteroids
+    function interact(_event: MouseEvent): void {
 
-        // shift+click - display player info
-        if (_event.shiftKey) {
+        if (_event.ctrlKey && _event.shiftKey == false && _event.altKey == false) { // just ctrl pressed
+            ball.shot(new Vector(_event.offsetX, _event.offsetY));
+            stop = false;
+            // while ball is rolling and no player has reached it yet
+            let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
+            currentTeam.style.backgroundColor = "white";
+            currentTeam.innerHTML = "kein Spieler";
+        }
+
+        // shift+click - display player info / Jirka - eiaSteroids
+        if (_event.shiftKey && _event.ctrlKey == false && _event.altKey == false) { // just shift pressed
             let hotspot: Vector = new Vector(_event.offsetX, _event.offsetY);
             let personClicked: Player | null = getClickedPerson(hotspot);
             if (personClicked)
                 displayInfo(personClicked);
         }
 
-        // alt+click - delete player
-        if (_event.altKey) {
+        // alt+click - delete player / Jirka - eiaSteroids
+        if (_event.altKey && _event.ctrlKey == false && _event.shiftKey == false) { // just alt pressed
             let hotspot: Vector = new Vector(_event.offsetX, _event.offsetY);
             let personClicked: Player | null = getClickedPerson(hotspot);
             if (personClicked)
                 personClicked.expendable = true;
         }
 
-        // a+click - new player for Team 1
-        if (pressedKey == "a" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) {
+        // ctrl+shift+click - new player for Team 1
+        if (_event.ctrlKey && _event.shiftKey && _event.altKey == false) { // ctrl+shift pressed
             extraPlayer1++;
             people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
 
-        // y+click - new player for Team 2
-        if (pressedKey == "y" && _event.ctrlKey == false && _event.shiftKey == false && _event.altKey == false) {
+        // ctrl+alt+click - new player for Team 2
+        if (_event.ctrlKey && _event.altKey && _event.shiftKey == false) { // ctrl+alt pressed
             extraPlayer2++;
             people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
         }

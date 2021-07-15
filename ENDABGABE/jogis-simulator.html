@@ -19,14 +19,18 @@
 <body>
     <header>
         <h1 id="title">Willkommen, lieber Jogi!</h1>
-        <p id="text">Die EM lief ja nicht so toll... immerhin gibt es noch den Fußballsimulator :) <br><br>Bevor es
-            losgeht, kannst du deine Mannschaften individualisieren! <br />Drücke einfach auf START,
-            wenn du fertig bist.</p>
+        <div id="text">
+            <img src="MEDIA/jogi2.png" width=100 height=100>
+            <p>Die EM lief ja nicht so toll... immerhin gibt es noch den Fußballsimulator :) <br><br>Bevor es
+                losgeht, kannst du deine Mannschaften individualisieren! <br />Drücke einfach auf START,
+                wenn du fertig bist.</p>
+            <img src="MEDIA/jogi.png" width=100 height=100>
+        </div>
     </header>
     <div id="flexContainer">
         <form>
             <fieldset id="form">
-                <!-- Auswahl Trikotfarben, Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler -->
+                <!-- Auswahl Trikotfarben, Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler, Spieldauer, Wahrnehmungsradius -->
                 <h3>Team 1</h3>
                 <b>Geschwindigkeits-Range</b><br />
                 langsamster Spieler
@@ -54,6 +58,13 @@
                 bester Spieler
                 <br /><b>Trikotfarbe</b><br />
                 <input type="color" name="ColorTeam2" placeholder="lightblue" id="color" value="#0000ff">
+                <hr>
+                <b>Wahrnehmungsradius&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                20m
+                <input type="range" name="SliderRadius" min="200" max="300" step="10" value="250" />
+                30m <br>
+                <b>Spieldauer (Minuten)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                <input type="number" name="StepperDuration" step="1" min="1" max="15" value="3" />
             </fieldset>
         </form>
         <div id="flexInstr">
@@ -63,20 +74,22 @@
                 <p>Hier kannst du zunächst Trikotfarben sowie Schnelligkeit und Präzision deiner Mannschaften
                     festlegen.<br>Für Schnelligkeit und Präzision kannst du jeweils den besten und schlechtesten Wert
                     auswählen, den deine Mannschaften haben sollen. Die Spieler bekommen dann jeweils
-                    Zufallswerte zwischen diesen Werten zugewiesen. <br><br> Im Simulator kannst du, sobald ein Spieler
-                    den Ball erreicht, per Strg+Click
+                    Zufallswerte zwischen diesen Werten zugewiesen. <br>
+                    Die Spieldauer und den Radius, in dem die Spieler auf den Ball reagieren, kannst du ebenfalls
+                    auswählen.
+                    <br><br> Im Simulator kannst du dann, sobald ein Spieler den Ball erreicht, per Strg+Click
                     auswählen, wohin er schießen soll - falls dein Spieler eine schlechte Präzision hat, kann der Schuss
                     auch mal daneben gehen!<br><br> Per Shift+Click auf einen Spieler kannst du dir Infos zum
-                    angeklickten Spieler anzeigen lassen.<br><br> Außerdem kannst du Spieler vom Platz entfernen (per
+                    angeklickten Spieler anzeigen lassen.<br> Außerdem kannst du Spieler vom Platz entfernen (per
                     Alt+Click auf den jeweiligen Spieler) und neue Spieler an einer beliebigen Stelle auf dem Spielfeld
-                    hinzufügen (a+Click für Team 1, y+Click für Team 2).<br><br>
-                    Keine Sorge, die Tastenkombinationen werden auch noch während des Spiels angezeigt :)<br>Ein Spiel
-                    dauert 5 Minuten.<br><br>Viel Spaß mit deinem Fußball-Simulator!
+                    hinzufügen (Strg+Shift+Click für Team 1, Strg+Alt+Click für Team 2).<br><br>
+                    Keine Sorge, die Tastenkombinationen werden auch noch während des Spiels angezeigt :)
+                    <br><br>Viel Spaß mit deinem Fußball-Simulator!
                 </p>
             </div>
+            <div id="startbutton">START</div>
         </div>
     </div>
-    <div id="startbutton">START</div>
     <div id="flexCanvas">
         <div id="canvasContainer">
             <canvas></canvas>
@@ -107,8 +120,8 @@
             <p><i>Strg+Click</i> - Ball schießen<br>
                 <i>Shift+Click</i> - Spielerinfos anzeigen<br>
                 <i>Alt+Click</i> - Spieler entfernen<br>
-                <i>a+Click</i> - neuer Spieler (Team 1)<br>
-                <i>y+Click</i> - neuer Spieler (Team 2)
+                <i>Strg+Shift+Click</i> - neuer Spieler (Team 1)<br>
+                <i>Strg+Alt+Click</i> - neuer Spieler (Team 2)
             </p>
         </div>
     </div>

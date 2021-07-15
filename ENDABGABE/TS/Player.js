@@ -2,11 +2,9 @@
 var Fussball;
 (function (Fussball) {
     class Player extends Fussball.Person {
-        // public expendable: boolean = false;
         constructor(_position, _color, _shirtNumber, _speedMin, _speedMax, _precisionMin, _precisionMax) {
             super(_position);
             this.color = _color;
-            // this.startPosition = _position.copy();
             this.shirtNumber = _shirtNumber;
             this.precision = Fussball.randomNumber(_precisionMin, _precisionMax);
             this.speed = Fussball.randomNumber(_speedMin, _speedMax);
@@ -14,7 +12,8 @@ var Fussball;
         move() {
             // distance to ball
             let distance = Fussball.Vector.getDifference(Fussball.ball.position, this.position);
-            if (distance.length <= 250) { // only start moving if ball is within 300px (=30m) radius - 250 for better game play (pitch still entirely covered)?
+            if (distance.length <= Fussball.radius) { // only start moving if ball is within player radius 
+                // -> design choice: 30m (= 300px) makes playing fairly tough so now user gets the option to change that
                 // players move towards ball
                 if (distance.length > 20) { // roughly radius of player + ball
                     this.position.x += distance.x * 0.01 * this.speed;
@@ -24,7 +23,7 @@ var Fussball;
                 else {
                     Fussball.stop = true;
                     Fussball.ball.shooterPrecision = this.precision;
-                    // show which team can shoot
+                    // show which player is touching the ball
                     let currentTeam = document.getElementById("currentPlayer");
                     currentTeam.style.backgroundColor = this.color;
                     currentTeam.innerHTML = this.shirtNumber.toString();
@@ -41,8 +40,8 @@ var Fussball;
         // register if player has been clicked
         isClicked(_hotspot) {
             let hitsize = 10;
-            let difference = new Fussball.Vector(_hotspot.x - this.position.x, _hotspot.y - this.position.y);
-            return (Math.abs(difference.x) < hitsize && Math.abs(difference.y) < hitsize);
+            let difference = Fussball.Vector.getDifference(_hotspot, this.position);
+            return (difference.length < hitsize);
         }
         draw() {
             Fussball.crc2.save();

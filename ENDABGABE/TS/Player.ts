@@ -6,13 +6,11 @@ namespace Fussball {
         public shirtNumber: number;
         public speed: number;
         public precision: number;
-        // public expendable: boolean = false;
 
         constructor(_position: Vector, _color: string, _shirtNumber: number, _speedMin: number, _speedMax: number, _precisionMin: number, _precisionMax: number) {
             super(_position);
 
             this.color = _color;
-            // this.startPosition = _position.copy();
             this.shirtNumber = _shirtNumber;
             this.precision = randomNumber(_precisionMin, _precisionMax);
             this.speed = randomNumber(_speedMin, _speedMax);
@@ -23,7 +21,8 @@ namespace Fussball {
             // distance to ball
             let distance: Vector = Vector.getDifference(ball.position, this.position);
 
-            if (distance.length <= 250) { // only start moving if ball is within 300px (=30m) radius - 250 for better game play (pitch still entirely covered)?
+            if (distance.length <= radius) { // only start moving if ball is within player radius 
+            // -> design choice: 30m (= 300px) makes playing fairly tough so now user gets the option to change that
 
                 // players move towards ball
                 if (distance.length > 20) { // roughly radius of player + ball
@@ -36,8 +35,8 @@ namespace Fussball {
                 else {
                     stop = true;
                     ball.shooterPrecision = this.precision;
-
-                    // show which team can shoot
+                    
+                    // show which player is touching the ball
                     let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
                     currentTeam.style.backgroundColor = this.color;
                     currentTeam.innerHTML = this.shirtNumber.toString();
@@ -57,8 +56,8 @@ namespace Fussball {
         // register if player has been clicked
         public isClicked(_hotspot: Vector): boolean { // Jirka - eiaSteroids
             let hitsize: number = 10;
-            let difference: Vector = new Vector(_hotspot.x - this.position.x, _hotspot.y - this.position.y);
-            return (Math.abs(difference.x) < hitsize && Math.abs(difference.y) < hitsize);
+            let difference: Vector = Vector.getDifference(_hotspot, this.position);
+            return (difference.length < hitsize);
         }
 
         public draw(): void {
