@@ -145,6 +145,7 @@ namespace Fussball {
                 ball.draw();
         }
         else { // ball goes out
+            
             out = true;
             ball.move();
 

@@ -14,7 +14,7 @@ var Fussball;
             this.position.add(distance);
             this.draw();
             // track score (team 1 scores)
-            if (this.position.x >= 974.9 && Fussball.out == false) {
+            if (this.position.x >= 974.99 && Fussball.out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
                     Fussball.scoreTeam1++;
                     let team1Score = document.getElementById("scoreTeam1");
@@ -26,7 +26,7 @@ var Fussball;
                 }
             }
             // track score (team 2 scores)
-            if (this.position.x <= 25.1 && Fussball.out == false) {
+            if (this.position.x <= 25.01 && Fussball.out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
                     Fussball.scoreTeam2++;
                     let team2Score = document.getElementById("scoreTeam2");

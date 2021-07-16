@@ -16,7 +16,7 @@ namespace Fussball {
             this.draw();
 
             // track score (team 1 scores)
-            if (this.position.x >= 974.9 && out == false) {
+            if (this.position.x >= 974.99 && out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
                     scoreTeam1++;
                     let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
@@ -30,7 +30,7 @@ namespace Fussball {
             }
 
             // track score (team 2 scores)
-            if (this.position.x <= 25.1 && out == false) {
+            if (this.position.x <= 25.01 && out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
                     scoreTeam2++;
                     let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam2");
