@@ -18,14 +18,14 @@ namespace Fussball {
 
         public move(): void {
 
-            // distance to ball
             let distance: Vector = Vector.getDifference(ball.position, this.position);
 
-            if (distance.length <= radius) { // only start moving if ball is within player radius 
-            // -> design choice: 30m (= 300px) makes playing fairly tough so now user gets the option to change that
+            if (distance.length <= radius) {
+            // -> design choice: 30m (= 300px) makes playing fairly tough (too many players around the ball)
+            // so now user gets the option to change that
 
-                // players move towards ball
-                if (distance.length > 20) { // roughly radius of player + ball
+                // move towards ball
+                if (distance.length > 20) { // ~ radius of player + ball
 
                     this.position.x += distance.x * 0.01 * this.speed;
                     this.position.y += distance.y * 0.01 * this.speed;
@@ -36,7 +36,7 @@ namespace Fussball {
                     stop = true;
                     ball.shooterPrecision = this.precision;
                     
-                    // show which player is touching the ball
+                    // display player touching the ball
                     let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
                     currentTeam.style.backgroundColor = this.color;
                     currentTeam.innerHTML = this.shirtNumber.toString();
@@ -44,7 +44,6 @@ namespace Fussball {
             }
 
             else {
-                // player back to starting position
                 let backToStart: Vector = Vector.getDifference(this.startPosition.copy(), this.position);
                 this.position.x += backToStart.x * 0.01 * this.speed;
                 this.position.y += backToStart.y * 0.01 * this.speed;
@@ -53,7 +52,6 @@ namespace Fussball {
             this.draw();
         }
 
-        // register if player has been clicked
         public isClicked(_hotspot: Vector): boolean { // Jirka - eiaSteroids
             let hitsize: number = 10;
             let difference: Vector = Vector.getDifference(_hotspot, this.position);

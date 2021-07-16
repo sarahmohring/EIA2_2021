@@ -10,12 +10,12 @@ var Fussball;
             this.speed = Fussball.randomNumber(_speedMin, _speedMax);
         }
         move() {
-            // distance to ball
             let distance = Fussball.Vector.getDifference(Fussball.ball.position, this.position);
-            if (distance.length <= Fussball.radius) { // only start moving if ball is within player radius 
-                // -> design choice: 30m (= 300px) makes playing fairly tough so now user gets the option to change that
-                // players move towards ball
-                if (distance.length > 20) { // roughly radius of player + ball
+            if (distance.length <= Fussball.radius) {
+                // -> design choice: 30m (= 300px) makes playing fairly tough (too many players around the ball)
+                // so now user gets the option to change that
+                // move towards ball
+                if (distance.length > 20) { // ~ radius of player + ball
                     this.position.x += distance.x * 0.01 * this.speed;
                     this.position.y += distance.y * 0.01 * this.speed;
                 }
@@ -23,21 +23,19 @@ var Fussball;
                 else {
                     Fussball.stop = true;
                     Fussball.ball.shooterPrecision = this.precision;
-                    // show which player is touching the ball
+                    // display player touching the ball
                     let currentTeam = document.getElementById("currentPlayer");
                     currentTeam.style.backgroundColor = this.color;
                     currentTeam.innerHTML = this.shirtNumber.toString();
                 }
             }
             else {
-                // player back to starting position
                 let backToStart = Fussball.Vector.getDifference(this.startPosition.copy(), this.position);
                 this.position.x += backToStart.x * 0.01 * this.speed;
                 this.position.y += backToStart.y * 0.01 * this.speed;
             }
             this.draw();
         }
-        // register if player has been clicked
         isClicked(_hotspot) {
             let hitsize = 10;
             let difference = Fussball.Vector.getDifference(_hotspot, this.position);

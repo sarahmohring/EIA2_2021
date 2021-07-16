@@ -1,9 +1,10 @@
 "use strict";
 var Fussball;
 (function (Fussball) {
-    class Person {
+    class Person extends Fussball.Moveable {
         constructor(_position) {
-            this.expendable = false; // warum nicht bei Player möglich
+            super();
+            this.expendable = false; // should be in Player but causes an error
             this.position = _position;
             this.startPosition = _position.copy();
         }

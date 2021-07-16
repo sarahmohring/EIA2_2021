@@ -8,6 +8,7 @@
     <title>Jogis Fußball-Simulator</title>
     <link rel="stylesheet" href="fussball.css" type="text/css" media="screen" />
     <script src="TS/Vector.js"></script>
+    <script src="TS/Moveable.js"></script>
     <script src="TS/Ball.js"></script>
     <script src="TS/Person.js"></script>
     <script src="TS/Referee.js"></script>
@@ -30,7 +31,6 @@
     <div id="flexContainer">
         <form>
             <fieldset id="form">
-                <!-- Auswahl Trikotfarben, Maximal- und Minimalwerte für Präzision und Schnelligkeit der Spieler, Spieldauer, Wahrnehmungsradius -->
                 <h3>Team 1</h3>
                 <b>Geschwindigkeits-Range</b><br />
                 langsamster Spieler
@@ -70,7 +70,6 @@
         <div id="flexInstr">
             <div id="instrText">
                 <h2>Spielanleitung</h2>
-                <!-- anpassen!-->
                 <p>Hier kannst du zunächst Trikotfarben sowie Schnelligkeit und Präzision deiner Mannschaften
                     festlegen.<br>Für Schnelligkeit und Präzision kannst du jeweils den besten und schlechtesten Wert
                     auswählen, den deine Mannschaften haben sollen. Die Spieler bekommen dann jeweils

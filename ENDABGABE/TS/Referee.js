@@ -7,7 +7,7 @@ var Fussball;
             this.velocity = new Fussball.Vector(0.5, 0.5);
         }
         move() {
-            // referee can move anywhere within the outer lines except goal area
+            // referee can move anywhere within the outer lines (except goal area)
             if (this.position.x < 75 || this.position.x > 925)
                 this.velocity.x = -this.velocity.x;
             if (this.position.y < 25 || this.position.y > 625)

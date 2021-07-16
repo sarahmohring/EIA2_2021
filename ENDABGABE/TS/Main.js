@@ -23,12 +23,11 @@ var Fussball;
     let duration;
     window.addEventListener("load", handleLoad);
     function handleLoad(_event) {
-        // install event listener on start button
         startButton = document.querySelector("#startbutton");
         startButton.addEventListener("click", handleStart);
     }
     function handleStart(_event) {
-        // hide intro text, form, instructions, and start button by pressing start
+        // manipulate DOM by pressing start
         let flexDiv = document.querySelector("#flexContainer");
         let flexCanvas = document.querySelector("#flexCanvas");
         let spielstand = document.querySelector("#spielstand");
@@ -36,29 +35,24 @@ var Fussball;
         flexDiv.style.display = "none";
         startButton.style.display = "none";
         text.style.display = "none";
-        // change title and body style
         let title = document.getElementById("title");
         title.innerHTML = "Jogis Fußball-Simulator";
         document.body.style.backgroundColor = "white";
         document.body.style.color = "black";
-        // display canvas and game info div instead
         Fussball.canvas = document.querySelector("canvas");
         Fussball.crc2 = Fussball.canvas.getContext("2d");
         flexCanvas.style.display = "flex";
         Fussball.canvas.style.display = "initial";
         spielstand.style.display = "initial";
-        // static canvas size fits football field png (10px = 1m)
+        // canvas size fits football field png (10px = 1m)
         Fussball.canvas.width = 1000;
         Fussball.canvas.height = 650;
         handleForm();
     }
     function handleForm() {
-        // save all form values in variables
         formData = new FormData(document.forms[0]);
-        // game duration
         duration = Number(formData.get("StepperDuration"));
         setInterval(endGame, duration * 60 * 1000);
-        // attention radius around players
         Fussball.radius = Number(formData.get("SliderRadius"));
         // team 1
         color1 = formData.get("ColorTeam1")?.toString();
@@ -72,7 +66,7 @@ var Fussball;
         speedMin2 = Number(formData.get("SliderSpeed2Min"));
         precisionMax2 = Number(formData.get("SliderPrecision2Max"));
         precisionMin2 = Number(formData.get("SliderPrecision2Min"));
-        // display team colors in info div
+        // team colors in info div
         let circleTeam1 = document.getElementById("team1");
         circleTeam1.style.backgroundColor = color1;
         let circleTeam2 = document.getElementById("team2");
@@ -103,7 +97,7 @@ var Fussball;
     function animate() {
         requestAnimationFrame(animate);
         Fussball.crc2.clearRect(0, 0, Fussball.canvas.width, Fussball.canvas.height);
-        // while ball is within the lines
+        // ball is within the lines
         if (Fussball.ball.position.x >= 25 && Fussball.ball.position.x <= 975 && Fussball.ball.position.y >= 25 && Fussball.ball.position.y <= 625) {
             if (Fussball.stop == false) {
                 Fussball.ball.move();
@@ -111,77 +105,75 @@ var Fussball;
             else
                 Fussball.ball.draw();
         }
-        else { // if ball goes out - reset to center;
+        else { // ball goes out
             Fussball.out = true;
             Fussball.ball.move();
             let info = document.getElementById("goalOrOut");
-            if (info.innerHTML != "<b>TOR!</b>") { // so "TOR!" doesn't get overwritten
+            if (info.innerHTML != "<b>TOR!</b>") { // avoid "TOR!" override
                 info.innerHTML = "<b>AUS!</b>";
             }
-            setTimeout(resetPitch, 2000); // Zittern wegen Animationsmethode ?!
+            setTimeout(resetPitch, 2000); // players "wiggle" - because animation method is still active?
         }
         for (let allPeople of Fussball.people) {
-            if (Fussball.stop == false) // when no player is at the ball position
+            if (Fussball.stop == false)
                 allPeople.move();
             else
-                allPeople.draw(); // "freeze frame"
+                allPeople.draw();
         }
         deleteExpendables();
     }
     function deleteExpendables() {
         for (let i = Fussball.people.length - 1; i >= 0; i--) {
-            if (Fussball.people[i] instanceof Fussball.Player && Fussball.people[i].expendable) // "expendable" should be a Player attribute but causes errors
+            if (Fussball.people[i] instanceof Fussball.Player && Fussball.people[i].expendable) // "expendable" should be a Player attribute but causes errors if it's not a Person attribute
                 Fussball.people.splice(i, 1);
         }
     }
     function resetPitch() {
-        Fussball.stop = false; // so game doesn't have to be manually restarted
+        Fussball.stop = false; // restart animation
         Fussball.out = false;
-        // ball goes back to the center of the pitch
+        // ball and people to starting positions 
         Fussball.ball = new Fussball.Ball();
-        // people go to their starting positions
         for (let allPeople of Fussball.people) {
             allPeople.position = allPeople.startPosition.copy();
         }
-        // reset "goalOrOut" display
+        // reset "goalOrOut"  and "momentan am Ball" display
         let info = document.getElementById("goalOrOut");
         info.innerHTML = "<br>";
-        // reset "momentan am Ball" display
         let currentTeam = document.getElementById("currentPlayer");
         currentTeam.style.backgroundColor = "white";
         currentTeam.innerHTML = "kein Spieler";
     }
-    // interact with players via mouse and keyboard
     function interact(_event) {
-        if (_event.ctrlKey && _event.shiftKey == false && _event.altKey == false) { // just ctrl pressed
+        // ctrl+click - shoot ball
+        if (_event.ctrlKey && _event.shiftKey == false && _event.altKey == false) {
             Fussball.ball.shot(new Fussball.Vector(_event.offsetX, _event.offsetY));
             Fussball.stop = false;
-            // while ball is rolling and no player has reached it yet
+            // ball is rolling, no player has reached it yet
             let currentTeam = document.getElementById("currentPlayer");
             currentTeam.style.backgroundColor = "white";
             currentTeam.innerHTML = "kein Spieler";
         }
         // shift+click - display player info / Jirka - eiaSteroids
-        if (_event.shiftKey && _event.ctrlKey == false && _event.altKey == false) { // just shift pressed
+        if (_event.shiftKey && _event.ctrlKey == false && _event.altKey == false) {
             let hotspot = new Fussball.Vector(_event.offsetX, _event.offsetY);
             let personClicked = getClickedPerson(hotspot);
             if (personClicked)
                 displayInfo(personClicked);
         }
         // alt+click - delete player / Jirka - eiaSteroids
-        if (_event.altKey && _event.ctrlKey == false && _event.shiftKey == false) { // just alt pressed
+        if (_event.altKey && _event.ctrlKey == false && _event.shiftKey == false) {
             let hotspot = new Fussball.Vector(_event.offsetX, _event.offsetY);
             let personClicked = getClickedPerson(hotspot);
             if (personClicked)
                 personClicked.expendable = true;
         }
         // ctrl+shift+click - new player for Team 1
-        if (_event.ctrlKey && _event.shiftKey && _event.altKey == false) { // ctrl+shift pressed
+        if (_event.ctrlKey && _event.shiftKey && _event.altKey == false) {
             extraPlayer1++;
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
         // ctrl+alt+click - new player for Team 2
-        if (_event.ctrlKey && _event.altKey && _event.shiftKey == false) { // ctrl+alt pressed
+        if (_event.ctrlKey && _event.altKey && _event.shiftKey == false) {
             extraPlayer2++;
             Fussball.people.push(new Fussball.Player(new Fussball.Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
         }
@@ -208,7 +200,6 @@ var Fussball;
         window.alert("Spiel vorbei! Der finale Spielstand ist " + Fussball.scoreTeam1 + ":" + Fussball.scoreTeam2);
         location.reload();
     }
-    // random number between a minimum and a maximum input
     function randomNumber(_min, _max) {
         return Math.random() * (_max - _min) + _min;
     }

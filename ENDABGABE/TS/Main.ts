@@ -31,14 +31,13 @@ namespace Fussball {
 
     function handleLoad(_event: Event): void {
 
-        // install event listener on start button
         startButton = <HTMLElement>document.querySelector("#startbutton");
         startButton.addEventListener("click", handleStart);
     }
 
     function handleStart(_event: MouseEvent): void {
 
-        // hide intro text, form, instructions, and start button by pressing start
+        // manipulate DOM by pressing start
         let flexDiv: HTMLDivElement = <HTMLDivElement>document.querySelector("#flexContainer");
         let flexCanvas: HTMLDivElement = <HTMLDivElement>document.querySelector("#flexCanvas");
         let spielstand: HTMLDivElement = <HTMLDivElement>document.querySelector("#spielstand");
@@ -48,14 +47,12 @@ namespace Fussball {
         startButton.style.display = "none";
         text.style.display = "none";
 
-        // change title and body style
         let title: HTMLElement = <HTMLElement>document.getElementById("title");
         title.innerHTML = "Jogis Fußball-Simulator";
 
         document.body.style.backgroundColor = "white";
         document.body.style.color = "black";
 
-        // display canvas and game info div instead
         canvas = <HTMLCanvasElement>document.querySelector("canvas");
         crc2 = <CanvasRenderingContext2D>canvas.getContext("2d");
 
@@ -63,7 +60,7 @@ namespace Fussball {
         canvas.style.display = "initial";
         spielstand.style.display = "initial";
 
-        // static canvas size fits football field png (10px = 1m)
+        // canvas size fits football field png (10px = 1m)
         canvas.width = 1000;
         canvas.height = 650;
 
@@ -72,14 +69,11 @@ namespace Fussball {
 
     function handleForm(): void {
 
-        // save all form values in variables
         formData = new FormData(document.forms[0]);
 
-        // game duration
         duration = Number(<unknown>formData.get("StepperDuration"));
         setInterval(endGame, duration * 60 * 1000);
 
-        // attention radius around players
         radius = Number(<unknown>formData.get("SliderRadius"));
 
         // team 1
@@ -96,7 +90,7 @@ namespace Fussball {
         precisionMax2 = Number(<unknown>formData.get("SliderPrecision2Max"));
         precisionMin2 = Number(<unknown>formData.get("SliderPrecision2Min"));
 
-        // display team colors in info div
+        // team colors in info div
         let circleTeam1: HTMLElement = <HTMLElement>document.getElementById("team1");
         circleTeam1.style.backgroundColor = color1;
         let circleTeam2: HTMLElement = <HTMLElement>document.getElementById("team2");
@@ -142,31 +136,31 @@ namespace Fussball {
         requestAnimationFrame(animate);
         crc2.clearRect(0, 0, canvas.width, canvas.height);
 
-        // while ball is within the lines
+        // ball is within the lines
         if (ball.position.x >= 25 && ball.position.x <= 975 && ball.position.y >= 25 && ball.position.y <= 625) {
             if (stop == false) {
-                ball.move();
+                ball.move(); 
             }
             else
                 ball.draw();
         }
-        else { // if ball goes out - reset to center;
+        else { // ball goes out
             out = true;
             ball.move();
 
             let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
-            if (info.innerHTML != "<b>TOR!</b>") { // so "TOR!" doesn't get overwritten
+            if (info.innerHTML != "<b>TOR!</b>") { // avoid "TOR!" override
                 info.innerHTML = "<b>AUS!</b>";
             }
 
-            setTimeout(resetPitch, 2000); // Zittern wegen Animationsmethode ?!
+            setTimeout(resetPitch, 2000); // players "wiggle" - because animation method is still active?
         }
 
         for (let allPeople of people) {
-            if (stop == false) // when no player is at the ball position
+            if (stop == false)
                 allPeople.move();
             else
-                allPeople.draw(); // "freeze frame"
+                allPeople.draw();
         }
 
         deleteExpendables();
@@ -174,48 +168,46 @@ namespace Fussball {
 
     function deleteExpendables(): void { // Jirka - eiaSteroids
         for (let i: number = people.length - 1; i >= 0; i--) {
-            if (people[i] instanceof Player && people[i].expendable) // "expendable" should be a Player attribute but causes errors
+            if (people[i] instanceof Player && people[i].expendable) // "expendable" should be a Player attribute but causes errors if it's not a Person attribute
                 people.splice(i, 1);
         }
     }
 
     function resetPitch(): void {
 
-        stop = false; // so game doesn't have to be manually restarted
+        stop = false; // restart animation
         out = false;
 
-        // ball goes back to the center of the pitch
+        // ball and people to starting positions 
         ball = new Ball();
 
-        // people go to their starting positions
         for (let allPeople of people) {
             allPeople.position = allPeople.startPosition.copy();
         }
 
-        // reset "goalOrOut" display
+        // reset "goalOrOut"  and "momentan am Ball" display
         let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
         info.innerHTML = "<br>";
 
-        // reset "momentan am Ball" display
         let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
         currentTeam.style.backgroundColor = "white";
         currentTeam.innerHTML = "kein Spieler";
     }
 
-    // interact with players via mouse and keyboard
     function interact(_event: MouseEvent): void {
 
-        if (_event.ctrlKey && _event.shiftKey == false && _event.altKey == false) { // just ctrl pressed
+        // ctrl+click - shoot ball
+        if (_event.ctrlKey && _event.shiftKey == false && _event.altKey == false) {
             ball.shot(new Vector(_event.offsetX, _event.offsetY));
             stop = false;
-            // while ball is rolling and no player has reached it yet
+            // ball is rolling, no player has reached it yet
             let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");
             currentTeam.style.backgroundColor = "white";
             currentTeam.innerHTML = "kein Spieler";
         }
 
         // shift+click - display player info / Jirka - eiaSteroids
-        if (_event.shiftKey && _event.ctrlKey == false && _event.altKey == false) { // just shift pressed
+        if (_event.shiftKey && _event.ctrlKey == false && _event.altKey == false) {
             let hotspot: Vector = new Vector(_event.offsetX, _event.offsetY);
             let personClicked: Player | null = getClickedPerson(hotspot);
             if (personClicked)
@@ -223,7 +215,7 @@ namespace Fussball {
         }
 
         // alt+click - delete player / Jirka - eiaSteroids
-        if (_event.altKey && _event.ctrlKey == false && _event.shiftKey == false) { // just alt pressed
+        if (_event.altKey && _event.ctrlKey == false && _event.shiftKey == false) {
             let hotspot: Vector = new Vector(_event.offsetX, _event.offsetY);
             let personClicked: Player | null = getClickedPerson(hotspot);
             if (personClicked)
@@ -231,13 +223,13 @@ namespace Fussball {
         }
 
         // ctrl+shift+click - new player for Team 1
-        if (_event.ctrlKey && _event.shiftKey && _event.altKey == false) { // ctrl+shift pressed
+        if (_event.ctrlKey && _event.shiftKey && _event.altKey == false) {
             extraPlayer1++;
             people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color1, extraPlayer1, speedMin1, speedMax1, precisionMin1, precisionMax1));
         }
 
         // ctrl+alt+click - new player for Team 2
-        if (_event.ctrlKey && _event.altKey && _event.shiftKey == false) { // ctrl+alt pressed
+        if (_event.ctrlKey && _event.altKey && _event.shiftKey == false) {
             extraPlayer2++;
             people.push(new Player(new Vector(_event.offsetX, _event.offsetY), color2, extraPlayer2, speedMin2, speedMax2, precisionMin2, precisionMax2));
         }
@@ -272,7 +264,6 @@ namespace Fussball {
         location.reload();
     }
 
-    // random number between a minimum and a maximum input
     export function randomNumber(_min: number, _max: number): number {
         return Math.random() * (_max - _min) + _min;
     }

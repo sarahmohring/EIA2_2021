@@ -1,6 +1,6 @@
 namespace Fussball {
 
-    export class Ball {
+    export class Ball extends Moveable {
 
         public position: Vector = new Vector(canvas.width / 2, canvas.height / 2); // center of the pitch
         public newPosition: Vector = this.position;
@@ -8,7 +8,7 @@ namespace Fussball {
 
         public move(): void {
 
-            // ball needs to go towards clicked position (slowing down at the end)
+            // move towards clicked position (slowing down at the end)
             let distance: Vector = Vector.getDifference(this.newPosition, this.position);
             distance.scale(0.01);
             this.position.add(distance);
@@ -17,13 +17,12 @@ namespace Fussball {
             // track score (team 1 scores)
             if (this.position.x >= 974.9 && out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
-                    // update score display
                     scoreTeam1++;
                     let team1Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam1");
                     team1Score.innerHTML = scoreTeam1.toString();
                     let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
                     info.innerHTML = "<b>TOR!</b>";
-                    // play cheering sound
+
                     let audio: HTMLAudioElement = <HTMLAudioElement>document.getElementById("cheer");
                     audio.play();
                 }
@@ -32,23 +31,22 @@ namespace Fussball {
             // track score (team 2 scores)
             if (this.position.x <= 25.1 && out == false) {
                 if (this.position.y >= 240 && this.position.y <= 410) {
-                    // update score display
                     scoreTeam2++;
                     let team2Score: HTMLElement = <HTMLElement>document.getElementById("scoreTeam2");
                     team2Score.innerHTML = scoreTeam2.toString();
                     let info: HTMLElement = <HTMLElement>document.getElementById("goalOrOut");
                     info.innerHTML = "<b>TOR!</b>";
-                    // play cheering sound
+
                     let audio: HTMLAudioElement = <HTMLAudioElement>document.getElementById("cheer");
                     audio.play();
                 }
             }
         }
 
-        public shot(_position: Vector): void { // ball destination depending on distance to click and precision of shooting player
+        public shot(_position: Vector): void {
             if (stop) {
                 let distance: Vector = Vector.getDifference(_position, this.position);
-                // destination further away and precision lower: ball is more likely to go to a wrong position
+                // destination further away and player precision lower: ball is more likely to go to a wrong position
                 _position.add(new Vector(randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision)), randomNumber(0.5 * (-distance.length) * (1 - this.shooterPrecision), 0.5 * distance.length * (1 - this.shooterPrecision))));
                 this.newPosition = _position.copy();
             }
