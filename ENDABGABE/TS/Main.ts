@@ -139,7 +139,7 @@ namespace Fussball {
         // ball is within the lines
         if (ball.position.x >= 25 && ball.position.x <= 975 && ball.position.y >= 25 && ball.position.y <= 625) {
             if (stop == false) {
-                ball.move(); 
+                ball.move();
             }
             else
                 ball.draw();
