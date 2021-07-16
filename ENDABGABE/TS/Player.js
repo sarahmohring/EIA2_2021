@@ -20,9 +20,10 @@ var Fussball;
                     this.position.y += distance.y * 0.01 * this.speed;
                 }
                 // first player reaches ball
-                else {
+                else if (Fussball.ball.playerAtBall != this) { // so the player doesn't stand in their own way when shooting
                     Fussball.stop = true;
                     Fussball.ball.shooterPrecision = this.precision;
+                    Fussball.ball.playerAtBall = this;
                     // display player touching the ball
                     let currentTeam = document.getElementById("currentPlayer");
                     currentTeam.style.backgroundColor = this.color;

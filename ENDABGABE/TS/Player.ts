@@ -32,9 +32,10 @@ namespace Fussball {
                 }
 
                 // first player reaches ball
-                else {
+                else if (ball.playerAtBall != this) { // so the player doesn't stand in their own way when shooting
                     stop = true;
                     ball.shooterPrecision = this.precision;
+                    ball.playerAtBall = this;
                     
                     // display player touching the ball
                     let currentTeam: HTMLElement = <HTMLElement>document.getElementById("currentPlayer");

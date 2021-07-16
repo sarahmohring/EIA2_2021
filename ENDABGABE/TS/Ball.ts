@@ -5,6 +5,7 @@ namespace Fussball {
         public position: Vector = new Vector(canvas.width / 2, canvas.height / 2); // center of the pitch
         public newPosition: Vector = this.position;
         public shooterPrecision: number;
+        public playerAtBall: Player;
 
         public move(): void {
 
