@@ -1,4 +1,12 @@
 "use strict";
+/*
+Aufgabe: Endabgabe - Fußball-Simulation
+Name: Sarah Mohring
+Matrikel: 268650
+Datum: 19.07.2021
+Quellen: verschiedene Code-Schnipsel aus dem eiaSteroids-Code von Jirka Dell'Oro-Friedl (-> kenntlich gemacht im Code)
+Dokumentation/Konzept: https://sarahmohring.github.io/EIA2_2021/ENDABGABE/KONZEPT/Endabgabe_Dokumentation_Sarah_Mohring.pdf
+*/
 var Fussball;
 (function (Fussball) {
     Fussball.people = [];
